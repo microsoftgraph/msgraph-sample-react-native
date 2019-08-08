@@ -27,11 +27,222 @@ Before moving on, install some additional dependencies that you will use later.
 
     ```Shell
     npm install react-navigation@3.11.1 react-native-app-auth@4.4.0 @microsoft/microsoft-graph-client@1.7.0
+    npm install react-native-gesture-handler@1.3.0 react-native-reanimated@1.1.0
+    ```
+
+### Link iOS dependencies
+
+> [!NOTE]
+> If you are not targeting iOS, you can skip this section.
+
+1. Open your CLI in the **GraphTutorial/ios** directory.
+1. Run the following command.
+
+    ```Shell
+    pod install
+    ```
+
+### Configure dependencies for Android
+
+> [!NOTE]
+> If you are not targeting Android, you can skip this section.
+
+1. Open the **GraphTutorial/android/app/build.gradle** file in an editor.
+1. Locate the `defaultConfig` entry and add the following property inside `defaultConfig`.
+
+    ```Gradle
+    manifestPlaceholders = [
+        appAuthRedirectScheme: 'graphtutorial'
+    ]
+    ```
+
+1. Save the file. The `defaultConfig` entry should look similar to the following.
+
+    ```Gradle
+    defaultConfig {
+        applicationId "com.graphtutorial"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        manifestPlaceholders = [
+            appAuthRedirectScheme: 'graphtutorial'
+        ]
+    }
     ```
 
 ## Design the app
 
-The application will use a [navigation drawer](https://reactnavigation.org/docs/drawer-based-navigation.html) to navigate between different views. In this step you will update the activity to use a navigation drawer layout, and add fragments for the views.
+The application will use a [navigation drawer](https://reactnavigation.org/docs/drawer-based-navigation.html) to navigate between different views. In this step you will create the basic views used by the app and implement the navigation drawer.
+
+### Create views
+
+In this section you will create the views for the app to support an [authentication flow](https://reactnavigation.org/docs/auth-flow.html).
+
+1. Create a new directory in the **GraphTutorial** directory named **views**.
+1. Create a new file in the **GraphTutorial/views** directory named **HomeScreen.js**. Add the following code to the file.
+
+    ```JSX
+    import React from 'react';
+    import {
+      ActivityIndicator,
+      Text,
+      StyleSheet,
+      View,
+    } from 'react-native';
+
+    export default class HomeScreen extends React.Component {
+      static navigationOptions = {
+        title: 'Welcome',
+      };
+
+      state = {
+        userLoading: true,
+        userName: '...'
+      };
+
+      render() {
+        return (
+          <View style={styles.container}>
+            <ActivityIndicator animating={this.state.userLoading} />
+            <Text>Hello {this.state.userName}!</Text>
+          </View>
+        );
+      }
+    }
+
+    const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
+    });
+    ```
+
+1. Create a new file in the **GraphTutorial/views** directory named **CalendarScreen.js**. Add the following code to the file.
+
+    ```JSX
+    import React from 'react';
+    import {
+      Text,
+      StyleSheet,
+      View,
+    } from 'react-native';
+
+    export default class CalendarScreen extends React.Component {
+      static navigationOptions = {
+        title: 'Calendar',
+      };
+
+      // Temporary placeholder view
+      render() {
+        return (
+          <View style={styles.container}>
+            <Text>Calendar</Text>
+          </View>
+        );
+      }
+    }
+
+    const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
+    });
+    ```
+
+1. Create a new file in the **GraphTutorial/views** directory named **SignInScreen.js**. Add the following code to the file.
+
+    ```JSX
+    // Adapted from https://reactnavigation.org/docs/auth-flow.html
+    import React from 'react';
+    import {
+      Button,
+      StyleSheet,
+      View,
+    } from 'react-native';
+
+    export default class SignInScreen extends React.Component {
+      static navigationOptions = {
+        title: 'Please sign in',
+      };
+
+      _signInAsync = async () => {
+        // TEMPORARY
+        this.props.navigation.navigate('App');
+      };
+
+      render() {
+        return (
+          <View style={styles.container}>
+            <Button title="Sign In" onPress={this._signInAsync}/>
+          </View>
+        );
+      }
+    }
+
+    const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
+    });
+    ```
+
+1. Create a new file in the **GraphTutorial/views** directory named **AuthLoadingScreen.js**. Add the following code to the file.
+
+    ```JSX
+    // Adapted from https://reactnavigation.org/docs/auth-flow.html
+    import React from 'react';
+    import {
+      ActivityIndicator,
+      AsyncStorage,
+      Text,
+      StyleSheet,
+      View,
+    } from 'react-native';
+
+    export default class AuthLoadingScreen extends React.Component {
+
+      componentDidMount() {
+        this._bootstrapAsync();
+      }
+
+      // Fetch the token from storage then navigate to our appropriate place
+      // NOTE: Production apps should protect user tokens in secure storage.
+      _bootstrapAsync = async () => {
+        const userToken = await AsyncStorage.getItem('userToken');
+
+        // This will switch to the App screen or Auth screen and this loading
+        // screen will be unmounted and thrown away.
+        this.props.navigation.navigate(userToken ? 'App' : 'Auth');
+      };
+
+      render() {
+        return (
+          <View style={styles.container}>
+            <ActivityIndicator />
+            <Text style={styles.statusText}>Logging in...</Text>
+          </View>
+        );
+      }
+    }
+
+    const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+      },
+      statusText: {
+        marginTop: 10
+      }
+    });
+    ```
 
 ### Create a navigation drawer
 

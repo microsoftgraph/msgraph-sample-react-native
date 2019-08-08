@@ -27,7 +27,7 @@ export default class AuthLoadingScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <ActivityIndicator />
+        <ActivityIndicator size='large' />
         <Text style={styles.statusText}>Logging in...</Text>
       </View>
     );
