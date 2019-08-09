@@ -1,13 +1,34 @@
 import React from 'react';
-import { StyleSheet, Text, SafeAreaView, ScrollView, View, Image } from 'react-native';
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
 import { DrawerItems } from 'react-navigation';
 
 export default class DrawerMenuContent extends React.Component {
 
   state = {
+    // TEMPORARY
     userName: 'Adele Vance',
     userEmail: 'adelev@contoso.com',
     userPhoto: require('../images/no-profile-pic.png')
+  }
+
+  // Check if user tapped on the Sign Out button and
+  // sign the user out
+  _onItemPressed = (route) => {
+    if (route.route.routeName !== 'Sign Out') {
+      this.props.onItemPress(route);
+      return;
+    }
+
+    // Sign out
+    // TEMPORARY
+    this.props.navigation.navigate('Auth');
   }
 
   render() {
@@ -24,7 +45,8 @@ export default class DrawerMenuContent extends React.Component {
               <Text style={styles.profileEmail}>{this.state.userEmail}</Text>
             </View>
           </View>
-          <DrawerItems {...this.props} />
+          <DrawerItems {...this.props}
+            onItemPress={this._onItemPressed}/>
         </SafeAreaView>
       </ScrollView>
     );
@@ -33,7 +55,7 @@ export default class DrawerMenuContent extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   profileView: {
     flexDirection: 'row',

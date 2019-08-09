@@ -1,17 +1,17 @@
 import React from 'react';
 import {
   ActivityIndicator,
-  Button,
   Text,
   StyleSheet,
   View,
 } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
     return {
       title: 'Welcome',
-      headerLeft: <Button title="Menu" onPress={navigation.toggleDrawer}/>
+      headerLeft: <Icon iconStyle={{ marginLeft: 10, color: 'white' }} size={30} name="menu" onPress={navigation.toggleDrawer} />
     };
   }
 
@@ -24,7 +24,7 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <ActivityIndicator animating={this.state.userLoading} size='large' />
-        {this.state.userLoading? null: <Text>Hello {this.state.userName}!</Text>}
+        {this.state.userLoading ? null: <Text>Hello {this.state.userName}!</Text>}
       </View>
     );
   }

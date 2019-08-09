@@ -11,24 +11,31 @@ import HomeScreen from './views/HomeScreen';
 import CalendarScreen from './views/CalendarScreen';
 import DrawerMenuContent from './menus/DrawerMenu';
 
-const AuthStack = createStackNavigator({
-  SignIn: SignInScreen
-});
+const headerOptions = {
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: '#276b80'
+    },
+    headerTintColor: 'white'
+  }
+};
+
+const AuthStack = createStackNavigator(
+  {
+    SignIn: SignInScreen
+  },
+  headerOptions
+);
 
 const AppDrawer = createDrawerNavigator(
   {
-    Home: createStackNavigator({ Home: HomeScreen }),
-    Calendar: createStackNavigator({ Calendar: CalendarScreen })
+    Home: createStackNavigator({ Home: HomeScreen }, headerOptions),
+    Calendar: createStackNavigator({ Calendar: CalendarScreen }, headerOptions),
+    'Sign Out': 'SignOut'
   },
   {
     hideStatusBar: false,
     contentComponent: DrawerMenuContent
-  }
-);
-
-const AppStack = createStackNavigator(
-  {
-    App: AppDrawer
   }
 );
 
