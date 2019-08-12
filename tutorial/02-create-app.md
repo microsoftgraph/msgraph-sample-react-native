@@ -34,7 +34,7 @@ Before moving on, install some additional dependencies that you will use later.
     react-native link react-native-vector-icons
     ```
 
-### Link iOS dependencies
+### Link and configure dependencies for iOS
 
 > [!NOTE]
 > If you are not targeting iOS, you can skip this section.
@@ -44,6 +44,21 @@ Before moving on, install some additional dependencies that you will use later.
 
     ```Shell
     pod install
+    ```
+
+1. Open the **GraphTutorial/ios/GraphTutorial/AppDelegate.h** file in a text editor. Replace its contents with the following.
+
+    ```obj-c
+    #import <React/RCTBridgeDelegate.h>
+    #import <UIKit/UIKit.h>
+    #import "RNAppAuthAuthorizationFlowManager.h"
+
+    @interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate, RNAppAuthAuthorizationFlowManager>
+
+    @property (nonatomic, strong) UIWindow *window;
+    @property (nonatomic, weak) id<RNAppAuthAuthorizationFlowManagerDelegate> authorizationFlowManagerDelegate;
+
+    @end
     ```
 
 ### Configure dependencies for Android
