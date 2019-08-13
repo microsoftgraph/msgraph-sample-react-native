@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^1.7.0",
+    "moment": "^2.24.0",
     "react": "16.8.6",
     "react-native": "0.60.4",
     "react-native-app-auth": "^4.4.0",

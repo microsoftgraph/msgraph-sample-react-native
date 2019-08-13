@@ -8,6 +8,8 @@ import {
   View
 } from 'react-native';
 import { DrawerItems } from 'react-navigation';
+import { AuthManager } from '../auth/AuthManager';
+import { GraphManager } from '../graph/GraphManager';
 
 export default class DrawerMenuContent extends React.Component {
 
@@ -20,15 +22,28 @@ export default class DrawerMenuContent extends React.Component {
 
   // Check if user tapped on the Sign Out button and
   // sign the user out
-  _onItemPressed = (route) => {
+  _onItemPressed = async (route) => {
     if (route.route.routeName !== 'Sign Out') {
       this.props.onItemPress(route);
       return;
     }
 
     // Sign out
-    // TEMPORARY
+    await AuthManager.signOutAsync();
     this.props.navigation.navigate('Auth');
+  }
+
+  async componentDidMount() {
+    // Get the signed-in user from Graph
+    const user = await GraphManager.getUserAsync();
+
+    // Update UI with display name and email
+    this.setState({
+      userName: user.displayName,
+      // Work/School accounts have email address in mail attribute
+      // Personal accounts have it in userPrincipalName
+      userEmail: user.mail !== null ? user.mail : user.userPrincipalName,
+    });
   }
 
   render() {
@@ -40,10 +55,8 @@ export default class DrawerMenuContent extends React.Component {
             <Image source={this.state.userPhoto}
               resizeMode='contain'
               style={styles.profilePhoto} />
-            <View style={styles.profileCard}>
-              <Text style={styles.profileUserName}>{this.state.userName}</Text>
-              <Text style={styles.profileEmail}>{this.state.userEmail}</Text>
-            </View>
+            <Text style={styles.profileUserName}>{this.state.userName}</Text>
+            <Text style={styles.profileEmail}>{this.state.userEmail}</Text>
           </View>
           <DrawerItems {...this.props}
             onItemPress={this._onItemPressed}/>
@@ -58,23 +71,19 @@ const styles = StyleSheet.create({
     flex: 1
   },
   profileView: {
-    flexDirection: 'row',
+    alignItems: 'center',
     padding: 10
   },
   profilePhoto: {
-    marginRight: 10,
     width: 80,
     height: 80,
     borderRadius: 40
-  },
-  profileCard: {
-    justifyContent: 'center',
-    margin: 10
   },
   profileUserName: {
     fontWeight: '700'
   },
   profileEmail: {
-    fontWeight: '200'
+    fontWeight: '200',
+    fontSize: 10
   }
 });

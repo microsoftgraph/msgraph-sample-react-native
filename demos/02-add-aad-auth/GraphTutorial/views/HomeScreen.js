@@ -6,6 +6,7 @@ import {
   View,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { GraphManager } from '../graph/GraphManager';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = ({navigation}) => {
@@ -19,6 +20,17 @@ export default class HomeScreen extends React.Component {
     userLoading: true,
     userName: ''
   };
+
+  async componentDidMount() {
+    try {
+      // Get the signed-in user from Graph
+      const user = await GraphManager.getUserAsync();
+      // Set the user name to the user's given name
+      this.setState({userName: user.givenName, userLoading: false});
+    } catch (error) {
+      alert(error);
+    }
+  }
 
   render() {
     return (

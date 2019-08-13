@@ -22,6 +22,7 @@ Before moving on, install some additional dependencies that you will use later.
 - [react-native-gesture-handler](https://github.com/kmagiera/react-native-gesture-handler) and [react-native-reanimate](https://github.com/kmagiera/react-native-reanimated), required by react-navigation.
 - [react-native-elements](https://react-native-training.github.io/react-native-elements/docs/getting_started.html) and [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) to provide icons for the UI.
 - [react-native-app-auth](https://github.com/FormidableLabs/react-native-app-auth) to handle authentication and token management.
+- [moment](https://momentjs.com) to handle parsing and comparison of dates and times.
 - [microsoft-graph-client](https://github.com/microsoftgraph/msgraph-sdk-javascript) for making calls to the Microsoft Graph.
 
 1. Open your CLI in the root directory of your React Native project.
@@ -29,7 +30,7 @@ Before moving on, install some additional dependencies that you will use later.
 
     ```Shell
     npm install react-navigation@3.11.1 react-native-gesture-handler@1.3.0 react-native-reanimated@1.1.0
-    npm install react-native-elements@1.1.0 react-native-vector-icons@6.6.0
+    npm install react-native-elements@1.1.0 react-native-vector-icons@6.6.0 moment@2.24.0
     npm install react-native-app-auth@4.4.0 @microsoft/microsoft-graph-client@1.7.0
     react-native link react-native-vector-icons
     ```
@@ -71,7 +72,7 @@ Before moving on, install some additional dependencies that you will use later.
 
     ```Gradle
     manifestPlaceholders = [
-        appAuthRedirectScheme: 'graphtutorial'
+        appAuthRedirectScheme: 'graph-tutorial'
     ]
     ```
 
@@ -301,7 +302,7 @@ In this section you will create a menu for the application, and update the appli
 
       // Check if user tapped on the Sign Out button and
       // sign the user out
-      _onItemPressed = (route) => {
+      _onItemPressed = async (route) => {
         if (route.route.routeName !== 'Sign Out') {
           this.props.onItemPress(route);
           return;
@@ -321,10 +322,8 @@ In this section you will create a menu for the application, and update the appli
                 <Image source={this.state.userPhoto}
                   resizeMode='contain'
                   style={styles.profilePhoto} />
-                <View style={styles.profileCard}>
-                  <Text style={styles.profileUserName}>{this.state.userName}</Text>
-                  <Text style={styles.profileEmail}>{this.state.userEmail}</Text>
-                </View>
+                <Text style={styles.profileUserName}>{this.state.userName}</Text>
+                <Text style={styles.profileEmail}>{this.state.userEmail}</Text>
               </View>
               <DrawerItems {...this.props}
                 onItemPress={this._onItemPressed}/>
@@ -339,24 +338,20 @@ In this section you will create a menu for the application, and update the appli
         flex: 1
       },
       profileView: {
-        flexDirection: 'row',
+        alignItems: 'center',
         padding: 10
       },
       profilePhoto: {
-        marginRight: 10,
         width: 80,
         height: 80,
         borderRadius: 40
-      },
-      profileCard: {
-        justifyContent: 'center',
-        margin: 10
       },
       profileUserName: {
         fontWeight: '700'
       },
       profileEmail: {
-        fontWeight: '200'
+        fontWeight: '200',
+        fontSize: 10
       }
     });
     ```

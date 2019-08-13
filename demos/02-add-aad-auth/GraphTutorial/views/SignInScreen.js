@@ -5,6 +5,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { AuthManager } from '../auth/AuthManager';
 
 export default class SignInScreen extends React.Component {
   static navigationOptions = {
@@ -12,8 +13,12 @@ export default class SignInScreen extends React.Component {
   };
 
   _signInAsync = async () => {
-    // TEMPORARY
-    this.props.navigation.navigate('App');
+    try {
+      await AuthManager.signInAsync();
+      this.props.navigation.navigate('App');
+    } catch (error) {
+      alert(error);
+    }
   };
 
   render() {
