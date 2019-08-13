@@ -225,16 +225,20 @@ In this section you will create a custom authentication provider for the Graph c
 
     ```js
     async componentDidMount() {
-      // Get the signed-in user from Graph
-      const user = await GraphManager.getUserAsync();
+      try {
+        // Get the signed-in user from Graph
+        const user = await GraphManager.getUserAsync();
 
-      // Update UI with display name and email
-      this.setState({
-        userName: user.displayName,
-        // Work/School accounts have email address in mail attribute
-        // Personal accounts have it in userPrincipalName
-        userEmail: user.mail !== null ? user.mail : user.userPrincipalName,
-      });
+        // Update UI with display name and email
+        this.setState({
+          userName: user.displayName,
+          // Work/School accounts have email address in mail attribute
+          // Personal accounts have it in userPrincipalName
+          userEmail: user.mail !== null ? user.mail : user.userPrincipalName,
+        });
+      } catch(error) {
+        alert(error);
+      }
     }
     ```
 
