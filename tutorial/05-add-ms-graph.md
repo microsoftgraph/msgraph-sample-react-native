@@ -35,6 +35,7 @@ In this section you will extend the `GraphManager` class to add a function to ge
     import React from 'react';
     import {
       ActivityIndicator,
+      FlatList,
       Modal,
       ScrollView,
       StyleSheet,
@@ -95,6 +96,19 @@ In this section you will extend the `GraphManager` class to add a function to ge
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
+      },
+      eventItem: {
+        padding: 10
+      },
+      eventSubject: {
+        fontWeight: '700',
+        fontSize: 18
+      },
+      eventOrganizer: {
+        fontWeight: '200'
+      },
+      eventDuration: {
+        fontWeight: '200'
       }
     });
     ```
@@ -103,202 +117,36 @@ You can now run the app, sign in, and tap the **Calendar** navigation item in th
 
 ## Display the results
 
-Now you can replace the JSON dump with something to display the results in a user-friendly manner. In this section, you will add a `ListView` to the calendar fragment, create a layout for each item in the `ListView`, and create a custom list adapter for the `ListView` that maps the fields of each `Event` to the appropriate `TextView` in the view.
+Now you can replace the JSON dump with something to display the results in a user-friendly manner. In this section, you will add a `FlatList` to the calendar screen to render the events.
 
-1. Replace the `TextView` in **app/res/layout/fragment_calendar.xml** with a `ListView`.
+1. Open the **GraphTutorial/graph/GraphManager.js** file and add the following `import` statement to the top of the file.
 
-    ```xml
-    <ListView
-        android:id="@+id/eventlist"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/colorPrimary"
-        android:dividerHeight="1dp" />
+    ```js
+    import moment from 'moment';
     ```
 
-1. Right-click the **app/res/layout** folder and select **New**, then **Layout resource file**.
+1. Add the following method **above** the `CalendarScreen` class declaration.
 
-1. Name the file `event_list_item`, change the **Root element** to `RelativeLayout`, and select **OK**.
-
-1. Open the **event_list_item.xml** file and replace its contents with the following.
-
-    ```xml
-    <?xml version="1.0" encoding="utf-8"?>
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
-
-        <TextView
-            android:id="@+id/eventsubject"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Subject"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/eventorganizer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/eventsubject"
-            android:text="Adele Vance"
-            android:textSize="15sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/eventorganizer"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingEnd="2sp"
-                android:text="Start:"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/eventstart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1:30 PM 2/19/2019"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="5sp"
-                android:paddingEnd="2sp"
-                android:text="End:"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/eventend"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1:30 PM 2/19/2019"
-                android:textSize="15sp" />
-        </LinearLayout>
-    </RelativeLayout>
+    ```js
+    convertDateTime = (dateTime) => {
+      const utcTime = moment.utc(dateTime);
+      return utcTime.local().format('MMM Do H:mm a');
+    };
     ```
 
-1. Right-click the **app/java/com.example.graphtutorial** folder and select **New**, then **Java Class**.
+1. Replace the `ScrollView` in the `render` method with the following.
 
-1. Name the class `EventListAdapter` and select **OK**.
-
-1. Open the **EventListAdapter** file and replace its contents with the following.
-
-    ```java
-    package com.example.graphtutorial;
-
-    import android.content.Context;
-    import android.support.annotation.NonNull;
-    import android.view.LayoutInflater;
-    import android.view.View;
-    import android.view.ViewGroup;
-    import android.widget.ArrayAdapter;
-    import android.widget.TextView;
-
-    import com.microsoft.graph.models.extensions.DateTimeTimeZone;
-    import com.microsoft.graph.models.extensions.Event;
-
-    import java.time.LocalDateTime;
-    import java.time.ZoneId;
-    import java.time.ZonedDateTime;
-    import java.time.format.DateTimeFormatter;
-    import java.time.format.FormatStyle;
-    import java.util.List;
-    import java.util.TimeZone;
-
-    public class EventListAdapter extends ArrayAdapter<Event> {
-        private Context mContext;
-        private int mResource;
-        private ZoneId mLocalTimeZoneId;
-
-        // Used for the ViewHolder pattern
-        // https://developer.android.com/training/improving-layouts/smooth-scrolling
-        static class ViewHolder {
-            TextView subject;
-            TextView organizer;
-            TextView start;
-            TextView end;
-        }
-
-        public EventListAdapter(Context context, int resource, List<Event> events) {
-            super(context, resource, events);
-            mContext = context;
-            mResource = resource;
-            mLocalTimeZoneId = TimeZone.getDefault().toZoneId();
-        }
-
-        @NonNull
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            Event event = getItem(position);
-
-            ViewHolder holder;
-
-            if (convertView == null) {
-                LayoutInflater inflater = LayoutInflater.from(mContext);
-                convertView = inflater.inflate(mResource, parent, false);
-
-                holder = new ViewHolder();
-                holder.subject = convertView.findViewById(R.id.eventsubject);
-                holder.organizer = convertView.findViewById(R.id.eventorganizer);
-                holder.start = convertView.findViewById(R.id.eventstart);
-                holder.end = convertView.findViewById(R.id.eventend);
-
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-
-            holder.subject.setText(event.subject);
-            holder.organizer.setText(event.organizer.emailAddress.name);
-            holder.start.setText(getLocalDateTimeString(event.start));
-            holder.end.setText(getLocalDateTimeString(event.end));
-
-            return convertView;
-        }
-
-        // Convert Graph's DateTimeTimeZone format to
-        // a LocalDateTime, then return a formatted string
-        private String getLocalDateTimeString(DateTimeTimeZone dateTime) {
-            ZonedDateTime localDateTime = LocalDateTime.parse(dateTime.dateTime)
-                    .atZone(ZoneId.of(dateTime.timeZone))
-                    .withZoneSameInstant(mLocalTimeZoneId);
-
-            return String.format("%s %s",
-                    localDateTime.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)),
-                    localDateTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
-        }
-    }
-    ```
-
-1. Open the **CalendarFragment** class and add the following function to the class.
-
-    ```java
-    private void addEventsToList() {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ListView eventListView = getView().findViewById(R.id.eventlist);
-
-                EventListAdapter listAdapter = new EventListAdapter(getActivity(),
-                        R.layout.event_list_item, mEventList);
-
-                eventListView.setAdapter(listAdapter);
-            }
-        });
-    }
-    ```
-
-1. Add the following line of code in the `success` override after the `mEventList = iEventCollectionPage.getCurrentPage();` line.
-
-    ```java
-    addEventsToList();
+    ```JSX
+    <FlatList data={this.state.events}
+      renderItem={({item}) =>
+        <View style={styles.eventItem}>
+          <Text style={styles.eventSubject}>{item.subject}</Text>
+          <Text style={styles.eventOrganizer}>{item.organizer.emailAddress.name}</Text>
+          <Text style={styles.eventDuration}>
+            {convertDateTime(item.start.dateTime)} - {convertDateTime(item.end.dateTime)}
+          </Text>
+        </View>
+      } />
     ```
 
 1. Run the app, sign in, and tap the **Calendar** navigation item. You should see the list of events.
