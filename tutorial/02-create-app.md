@@ -417,7 +417,9 @@ In this section you will create a menu for the application, and update the appli
 
 The app's menu should work to navigate between the two fragments and change when you tap the **Sign in** or **Sign out** buttons.
 
-![Screenshot of the application](./images/app-screens.png)
+![Screenshots of the application on Android](./images/android-app-screens.png)
+
+![Screenshots of the application on iOS](./images/ios-app-screens.png)
 
 > [!NOTE]
 > You may receive warnings when running the app about Async Storage or componentWillUpdate. For the purposes of this tutorial, you can dismiss those warnings.
