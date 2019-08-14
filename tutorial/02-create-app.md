@@ -2,7 +2,7 @@
 
 Begin by creating a new React Native project.
 
-1. Open your command line interface (CLI) in a directory where you want to create the project. Run the following command to install the [react-native-cli] tool and create a new React Native project.
+1. Open your command line interface (CLI) in a directory where you want to create the project. Run the following command to install the [react-native-cli](https://github.com/facebook/react-native) tool and create a new React Native project.
 
     ```Shell
     npm install -g react-native-cli
@@ -43,7 +43,7 @@ Before moving on, install some additional dependencies that you will use later.
 1. Open your CLI in the **GraphTutorial/ios** directory.
 1. Run the following command.
 
-    ```Shell
+    ```shell
     pod install
     ```
 
@@ -78,7 +78,7 @@ Before moving on, install some additional dependencies that you will use later.
 
 1. Save the file. The `defaultConfig` entry should look similar to the following.
 
-    ```Gradle
+    ```gradle
     defaultConfig {
         applicationId "com.graphtutorial"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -102,7 +102,7 @@ In this section you will create the views for the app to support an [authenticat
 1. Create a new directory in the **GraphTutorial** directory named **views**.
 1. Create a new file in the **GraphTutorial/views** directory named **HomeScreen.js**. Add the following code to the file.
 
-    ```JSX
+    ```jsx
     import React from 'react';
     import {
       ActivityIndicator,
