@@ -31,7 +31,7 @@ In this section you will extend the `GraphManager` class to add a function to ge
 
 1. Open the **GraphTutorial/views/CalendarScreen.js** and replace its entire contents with the following code.
 
-    ```js
+    ```JSX
     import React from 'react';
     import {
       ActivityIndicator,
