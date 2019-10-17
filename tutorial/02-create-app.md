@@ -410,6 +410,7 @@ In this section you will create a menu for the application, and update the appli
         initialRouteName: 'AuthLoading'
       }
     ));
+    ```
 
 1. Save all of your changes.
 
