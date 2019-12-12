@@ -2,16 +2,17 @@
 
 Begin by creating a new React Native project.
 
-1. Open your command line interface (CLI) in a directory where you want to create the project. Run the following command to run the [react-native-cli](https://github.com/facebook/react-native) tool and create a new React Native project.
+1. Open your command line interface (CLI) in a directory where you want to create the project. Run the following command to install the [react-native-cli](https://github.com/facebook/react-native) tool and create a new React Native project.
 
     ```Shell
-    npx react-native init GraphTutorial
+    npm install -g react-native-cli
+    react-native init GraphTutorial
     ```
 
 1. **Optional:** Verify that your development environment is configured correctly by running the project. In your CLI, change the directory to the **GraphTutorial** directory you just created, and run one of the following commands.
 
-    - For iOS: `npx react-native run-ios`
-    - For Android: Launch an Android emulator instance and run `npx react-native run-android`
+    - For iOS: `react-native run-ios`
+    - For Android: Launch an Android emulator instance and run `react-native run-android`
 
 ## Install dependencies
 
@@ -28,9 +29,10 @@ Before moving on, install some additional dependencies that you will use later.
 1. Run the following command.
 
     ```Shell
-    npm install react-navigation@3.11.1 react-native-gesture-handler@1.5.2 react-native-reanimated@1.4.0
-    npm install react-native-elements@1.2.7 react-native-vector-icons@6.6.0 moment@2.24.0
-    npm install react-native-app-auth@4.4.0 @microsoft/microsoft-graph-client@2.0.0
+    npm install react-navigation@3.11.1 react-native-gesture-handler@1.3.0 react-native-reanimated@1.1.0
+    npm install react-native-elements@1.1.0 react-native-vector-icons@6.6.0 moment@2.24.0
+    npm install react-native-app-auth@4.4.0 @microsoft/microsoft-graph-client@1.7.0
+    react-native link react-native-vector-icons
     ```
 
 ### Link and configure dependencies for iOS
@@ -43,29 +45,6 @@ Before moving on, install some additional dependencies that you will use later.
 
     ```Shell
     pod install
-    ```
-
-1. Open the **GraphTutorial/ios/GraphTutorial/Info.plist** file in a text editor. Add the following just before the last `</dict>` line in the file.
-
-    ```xml
-    <key>UIAppFonts</key>
-    <array>
-      <string>AntDesign.ttf</string>
-      <string>Entypo.ttf</string>
-      <string>EvilIcons.ttf</string>
-      <string>Feather.ttf</string>
-      <string>FontAwesome.ttf</string>
-      <string>FontAwesome5_Brands.ttf</string>
-      <string>FontAwesome5_Regular.ttf</string>
-      <string>FontAwesome5_Solid.ttf</string>
-      <string>Foundation.ttf</string>
-      <string>Ionicons.ttf</string>
-      <string>MaterialIcons.ttf</string>
-      <string>MaterialCommunityIcons.ttf</string>
-      <string>SimpleLineIcons.ttf</string>
-      <string>Octicons.ttf</string>
-      <string>Zocial.ttf</string>
-    </array>
     ```
 
 1. Open the **GraphTutorial/ios/GraphTutorial/AppDelegate.h** file in a text editor. Replace its contents with the following.
@@ -97,7 +76,7 @@ Before moving on, install some additional dependencies that you will use later.
     ]
     ```
 
-    The `defaultConfig` entry should look similar to the following.
+1. Save the file. The `defaultConfig` entry should look similar to the following.
 
     ```Gradle
     defaultConfig {
@@ -111,14 +90,6 @@ Before moving on, install some additional dependencies that you will use later.
         ]
     }
     ```
-
-1. Add the following line to the end of the file.
-
-    ```Gradle
-    apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
-    ```
-
-1. Save the file.
 
 ## Design the app
 
@@ -384,9 +355,6 @@ In this section you will create a menu for the application, and update the appli
       }
     });
     ```
-
-1. Create a new directory in the **GraphTutorial** directory named **images**.
-1. Add a default profile image named **no-profile-pic.png** in this directory. You can use any image you like, or use [the one from this sample](https://github.com/microsoftgraph/msgraph-training-react-native/blob/master/demos/01-create-app/GraphTutorial/images/no-profile-pic.png).
 
 1. Open the **GraphTutorial/App.js** file and replace the entire contents with the following.
 
