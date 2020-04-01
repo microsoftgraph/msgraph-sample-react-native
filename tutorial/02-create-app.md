@@ -107,7 +107,7 @@ Before moving on, install some additional dependencies that you will use later.
         versionCode 1
         versionName "1.0"
         manifestPlaceholders = [
-            appAuthRedirectScheme: 'graphtutorial'
+            appAuthRedirectScheme: 'graph-tutorial'
         ]
     }
     ```
