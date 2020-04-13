@@ -15,12 +15,12 @@ Before you start this tutorial, you should have the following installed on your 
 - [Node.js](https://nodejs.org)
 
 > [!NOTE]
-> This tutorial was written using the React Native CLI, which has specific prerequisites depending on your operating system and target platforms. See [React Native Getting Started](https://facebook.github.io/react-native/docs/getting-started) for instructions on configuring your development machine. The versions used for this tutorial are listed below. The steps in this guide may work with other versions, but that has not been tested.
+> This tutorial was written using the React Native CLI, which has specific prerequisites depending on your operating system and target platforms. See [React Native Getting Started](https://reactnative.dev/docs/environment-setup) for instructions on configuring your development machine. The versions used for this tutorial are listed below. The steps in this guide may work with other versions, but that has not been tested.
 >
-> - Android Studio version 3.4.2 with the 1.8.0 JRE and the Android 9.0 SDK
+> - Android Studio version 3.6.2 with the Android 9.0 SDK
 > - Java Development Kit version 12.0.2
-> - Xcode version 10.3
-> - Node.js version 10.16.0
+> - Xcode version 11.4
+> - Node.js version 12.16.2
 
 ## Feedback
 
