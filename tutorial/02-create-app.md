@@ -122,28 +122,34 @@ In this section you will create the views for the app to support an [authenticat
     import React from 'react';
     import {
       ActivityIndicator,
-      Text,
+      Alert,
       StyleSheet,
+      Text,
       View,
     } from 'react-native';
     import { createStackNavigator } from '@react-navigation/stack';
     import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
 
     const Stack = createStackNavigator();
+    const UserState = React.createContext({userLoading: true, userName: ''});
 
     type HomeScreenState = {
       userLoading: boolean;
       userName: string;
     }
 
-    export default class HomeScreen extends React.Component {
+    const HomeComponent = () => {
+      const userState = React.useContext(UserState);
 
-      HomeComponent = () => (
+      return (
         <View style={styles.container}>
-          <ActivityIndicator animating={this.state.userLoading} size='large' />
-          {this.state.userLoading ? null: <Text>Hello {this.state.userName}!</Text>}
+          <ActivityIndicator animating={userState.userLoading} size='large' />
+          {userState.userLoading ? null: <Text>Hello {userState.userName}!</Text>}
         </View>
       );
+    }
+
+    export default class HomeScreen extends React.Component {
 
       state: HomeScreenState = {
         userLoading: true,
@@ -152,14 +158,16 @@ In this section you will create the views for the app to support an [authenticat
 
       render() {
         return (
-          <Stack.Navigator screenOptions={headerOptions}>
-            <Stack.Screen name='Home'
-              component={this.HomeComponent}
-              options={{
-                title: 'Welcome',
-                headerLeft: () => <DrawerToggle/>
-              }} />
-          </Stack.Navigator>
+          <UserState.Provider value={this.state}>
+              <Stack.Navigator screenOptions={headerOptions}>
+                <Stack.Screen name='Home'
+                  component={HomeComponent}
+                  options={{
+                    title: 'Welcome',
+                    headerLeft: () => <DrawerToggle/>
+                  }} />
+              </Stack.Navigator>
+          </UserState.Provider>
         );
       }
     }
@@ -225,6 +233,7 @@ In this section you will create the views for the app to support an [authenticat
     // Adapted from https://reactnavigation.org/docs/auth-flow
     import React from 'react';
     import {
+      Alert,
       Button,
       StyleSheet,
       View,
@@ -290,6 +299,7 @@ In this section you will create a menu for the application, and update the appli
     ```TSX
     import React, { FC } from 'react';
     import {
+      Alert,
       Image,
       StyleSheet,
       Text,
@@ -347,7 +357,7 @@ In this section you will create a menu for the application, and update the appli
         userPhoto: require('../images/no-profile-pic.png')
       }
 
-      _signOut = () => {
+      _signOut = async () => {
         const navigation = this.context;
         // Sign out
         // TEMPORARY

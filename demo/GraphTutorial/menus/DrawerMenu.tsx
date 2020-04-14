@@ -3,6 +3,7 @@
 
 import React, { FC } from 'react';
 import {
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -20,6 +21,8 @@ import { NavigationContext } from '@react-navigation/native';
 
 import HomeScreen from '../screens/HomeScreen';
 import CalendarScreen from '../screens/CalendarScreen';
+import { AuthManager } from '../auth/AuthManager';
+import { GraphManager } from '../graph/GraphManager';
 
 const Drawer = createDrawerNavigator();
 
@@ -53,6 +56,34 @@ const CustomDrawerContent: FC<CustomDrawerContentProps> = props => (
 export default class DrawerMenuContent extends React.Component {
   static contextType = NavigationContext;
 
+  // <ComponentDidMountSnippet>
+  async componentDidMount() {
+    try {
+      // Get the signed-in user from Graph
+      const user = await GraphManager.getUserAsync();
+
+      // Update UI with display name and email
+      this.setState({
+        userName: user.displayName,
+        // Work/School accounts have email address in mail attribute
+        // Personal accounts have it in userPrincipalName
+        userEmail: user.mail !== null ? user.mail : user.userPrincipalName,
+      });
+    } catch(error) {
+      Alert.alert(
+        'Error getting user',
+        JSON.stringify(error),
+        [
+          {
+            text: 'OK'
+          }
+        ],
+        { cancelable: false }
+      );
+    }
+  }
+  // </ComponentDidMountSnippet>
+
   state: DrawerMenuState = {
     // TEMPORARY
     userName: 'Adele Vance',
@@ -60,15 +91,19 @@ export default class DrawerMenuContent extends React.Component {
     userPhoto: require('../images/no-profile-pic.png')
   }
 
-  _signOut = () => {
+  // <SignOutSnippet>
+  _signOut = async () => {
     const navigation = this.context;
+
     // Sign out
-    // TEMPORARY
+    await AuthManager.signOutAsync();
+
     navigation.reset({
       index: 0,
       routes: [{ name: 'SignIn' }]
     });
   }
+  // </SignOutSnippet>
 
   render() {
     const navigation = this.context;

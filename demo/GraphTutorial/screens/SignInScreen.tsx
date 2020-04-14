@@ -4,11 +4,14 @@
 // Adapted from https://reactnavigation.org/docs/auth-flow
 import React from 'react';
 import {
+  Alert,
   Button,
   StyleSheet,
   View,
 } from 'react-native';
 import { NavigationContext } from '@react-navigation/native';
+
+import { AuthManager } from '../auth/AuthManager';
 
 export default class SignInScreen extends React.Component {
   static contextType = NavigationContext;
@@ -17,15 +20,33 @@ export default class SignInScreen extends React.Component {
     title: 'Please sign in',
   };
 
+  // <SignInAsyncSnippet>
   _signInAsync = async () => {
     const navigation = this.context;
 
-    // TEMPORARY
-    navigation.reset({
-      index: 0,
-      routes: [ { name: 'Main' } ]
-    });
-  };
+    try {
+      await AuthManager.signInAsync();
+
+      console.log('Signed in');
+
+      navigation.reset({
+        index: 0,
+        routes: [ { name: 'Main' } ]
+      });
+    } catch (error) {
+      Alert.alert(
+        'Error signing in',
+        JSON.stringify(error),
+        [
+          {
+            text: 'OK'
+          }
+        ],
+        { cancelable: false }
+      );
+    }
+  }
+  // </SignInAsyncSnippet>
 
   render() {
     const navigation = this.context;
