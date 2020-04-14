@@ -183,7 +183,7 @@ In this section you will create the views for the app to support an [authenticat
 
 1. Create a new file in the **GraphTutorial/screens** directory named **CalendarScreen.tsx**. Add the following code to the file.
 
-    ```TSX
+    ```typescript
     import React from 'react';
     import {
       Text,
@@ -229,7 +229,7 @@ In this section you will create the views for the app to support an [authenticat
 
 1. Create a new file in the **GraphTutorial/screens** directory named **SignInScreen.tsx**. Add the following code to the file.
 
-    ```TSX
+    ```typescript
     // Adapted from https://reactnavigation.org/docs/auth-flow
     import React from 'react';
     import {
@@ -283,7 +283,7 @@ In this section you will create the views for the app to support an [authenticat
 
 1. Create a new file in the **GraphTutorial/screens** directory named **AuthLoadingScreen.tsx**. Add the following code to the file.
 
-    :::code language="TSX" source="../demo/GraphTutorial/screens/AuthLoadingScreen.tsx" id="AuthLoadingScreenSnippet":::
+    :::code language="typescript" source="../demo/GraphTutorial/screens/AuthLoadingScreen.tsx" id="AuthLoadingScreenSnippet":::
 
 ### Create a navigation drawer
 
@@ -292,11 +292,11 @@ In this section you will create a menu for the application, and update the appli
 1. Create a new directory in the **GraphTutorial** directory named **menus**.
 1. Create a new file in the **GraphTutorial/menus** directory named **HeaderComponents.tsx**. Add the following code to the file.
 
-    :::code language="TSX" source="../demo/GraphTutorial/menus/HeaderComponents.tsx" id="HeaderComponentSnippet":::
+    :::code language="typescript" source="../demo/GraphTutorial/menus/HeaderComponents.tsx" id="HeaderComponentSnippet":::
 
 1. Create a new file in the **GraphTutorial/menus** directory named **DrawerMenu.tsx**. Add the following code to the file.
 
-    ```TSX
+    ```typescript
     import React, { FC } from 'react';
     import {
       Alert,
@@ -422,7 +422,7 @@ In this section you will create a menu for the application, and update the appli
 
 1. Open the **GraphTutorial/App.tsx** file and replace the entire contents with the following.
 
-    :::code language="TSX" source="../demo/GraphTutorial/App.tsx" id="AppSnippet":::
+    :::code language="typescript" source="../demo/GraphTutorial/App.tsx" id="AppSnippet":::
 
 1. Save all of your changes.
 

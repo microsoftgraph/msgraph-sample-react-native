@@ -22,23 +22,23 @@ In this section you will create an authentication helper class, and update the a
 
 1. Open the **GraphTutorial/views/SignInScreen.tsx** file and add the following `import` statement to the top of the file.
 
-    ```TSX
+    ```typescript
     import { AuthManager } from '../auth/AuthManager';
     ```
 
 1. Replace the existing `_signInAsync` method with the following.
 
-    :::code language="TSX" source="../demo/GraphTutorial/screens/SignInScreen.tsx" id="SignInAsyncSnippet":::
+    :::code language="typescript" source="../demo/GraphTutorial/screens/SignInScreen.tsx" id="SignInAsyncSnippet":::
 
 1. Open the **GraphTutorial/views/HomeScreen.tsx** file and add the following `import` statement to the top of the file.
 
-    ```TSX
+    ```typescript
     import { AuthManager } from '../auth/AuthManager';
     ```
 
 1. Add the following method to the `HomeScreen` class.
 
-    ```TSX
+    ```typescript
     async componentDidMount() {
       try {
         const accessToken = await AuthManager.getAccessTokenAsync();
@@ -53,13 +53,13 @@ In this section you will create an authentication helper class, and update the a
 
 1. Open the **GraphTutorial/menus/DrawerMenu.tsx** file and add the following `import` statement to the top of the file.
 
-    ```TSX
+    ```typescript
     import { AuthManager } from '../auth/AuthManager';
     ```
 
 1. Replace the existing `_signOut` method with the following.
 
-    :::code language="TSX" source="../demo/GraphTutorial/menus/DrawerMenu.tsx" id="SignOutSnippet" highlight="5":::
+    :::code language="typescript" source="../demo/GraphTutorial/menus/DrawerMenu.tsx" id="SignOutSnippet" highlight="5":::
 
 1. Save your changes and reload the application in your emulator.
 
@@ -99,22 +99,22 @@ In this section you will create a custom authentication provider for the Graph c
 
 1. Open the **GraphTutorial/views/HomeScreen.tsx** file and add the following `import` statement to the top of the file.
 
-    ```TSX
+    ```typescript
     import { GraphManager } from '../graph/GraphManager';
     ```
 
 1. Replace the `componentDidMount` method with the following.
 
-    :::code language="TSX" source="../demo/GraphTutorial/screens/HomeScreen.tsx" id="ComponentDidMountSnippet" highlight="3-6,9":::
+    :::code language="typescript" source="../demo/GraphTutorial/screens/HomeScreen.tsx" id="ComponentDidMountSnippet" highlight="3-6,9":::
 
 1. Open the **GraphTutorial/views/DrawerMenu.tsx** file and add the following `import` statement to the top of the file.
 
-    ```TSX
+    ```typescript
     import { GraphManager } from '../graph/GraphManager';
     ```
 
 1. Add the following `componentDidMount` method to the `DrawerMenuContent` class.
 
-    :::code language="TSX" source="../demo/GraphTutorial/menus/DrawerMenu.tsx" id="ComponentDidMountSnippet":::
+    :::code language="typescript" source="../demo/GraphTutorial/menus/DrawerMenu.tsx" id="ComponentDidMountSnippet":::
 
 If you save your changes and reload the app now, after sign-in the UI is updated with the user's display name and email address.

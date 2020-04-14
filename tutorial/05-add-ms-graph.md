@@ -19,7 +19,7 @@ In this section you will extend the `GraphManager` class to add a function to ge
 
 1. Open the **GraphTutorial/views/CalendarScreen.tsx** and replace its entire contents with the following code.
 
-    ```TSX
+    ```typescript
     import React from 'react';
     import {
       ActivityIndicator,
@@ -147,7 +147,7 @@ Now you can replace the JSON dump with something to display the results in a use
 
 1. Add the following method **above** the `CalendarScreen` class declaration.
 
-    :::code language="TSX" source="../demo/GraphTutorial/screens/CalendarScreen.tsx" id="ConvertDateSnippet":::
+    :::code language="typescript" source="../demo/GraphTutorial/screens/CalendarScreen.tsx" id="ConvertDateSnippet":::
 
 1. Replace the `ScrollView` in the `CalendarComponent` method with the following.
 
