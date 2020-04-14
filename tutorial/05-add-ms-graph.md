@@ -151,7 +151,7 @@ Now you can replace the JSON dump with something to display the results in a use
 
 1. Replace the `ScrollView` in the `CalendarComponent` method with the following.
 
-    ```JSX
+    ```typescript
     <FlatList data={calendarState.events}
       renderItem={({item}) =>
         <View style={styles.eventItem}>
