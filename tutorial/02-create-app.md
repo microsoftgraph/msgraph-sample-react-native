@@ -73,7 +73,7 @@ Before moving on, install some additional dependencies that you will use later.
 
 1. Open the **GraphTutorial/ios/GraphTutorial/AppDelegate.h** file in a text editor. Replace its contents with the following.
 
-    :::code language="obj-c" source="../demo/GraphTutorial/ios/GraphTutorial/AppDelegate.h":::
+    :::code language="objc" source="../demo/GraphTutorial/ios/GraphTutorial/AppDelegate.h":::
 
 ### Configure dependencies for Android
 
@@ -118,7 +118,7 @@ In this section you will create the views for the app to support an [authenticat
 1. Create a new directory in the **GraphTutorial** directory named **screens**.
 1. Create a new file in the **GraphTutorial/screens** directory named **HomeScreen.tsx**. Add the following code to the file.
 
-    ```TSX
+    ```typescript
     import React from 'react';
     import {
       ActivityIndicator,
