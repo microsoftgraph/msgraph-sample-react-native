@@ -2,6 +2,7 @@
 //  Licensed under the MIT license.
 
 import { Client } from '@microsoft/microsoft-graph-client';
+
 import { GraphAuthProvider } from './GraphAuthProvider';
 
 // Set the authProvider to an instance
@@ -18,4 +19,18 @@ export class GraphManager {
     // GET /me
     return graphClient.api('/me').get();
   }
+
+  // <GetEventsSnippet>
+  static getEvents = async() => {
+    // GET /me/events
+    return graphClient.api('/me/events')
+      // $select='subject,organizer,start,end'
+      // Only return these fields in results
+      .select('subject,organizer,start,end')
+      // $orderby=createdDateTime DESC
+      // Sort results by when they were created, newest first
+      .orderby('createdDateTime DESC')
+      .get();
+  }
+  // </GetEventsSnippet>
 }

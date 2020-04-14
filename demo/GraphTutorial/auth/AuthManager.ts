@@ -23,9 +23,7 @@ const config: AuthConfiguration = {
 export class AuthManager {
 
   static signInAsync = async () => {
-    console.log('Redirect: ' + config.redirectUrl);
     const result = await authorize(config);
-    console.log('authorize completed');
 
     // Store the access token, refresh token, and expiration time in storage
     await AsyncStorage.setItem('userToken', result.accessToken);

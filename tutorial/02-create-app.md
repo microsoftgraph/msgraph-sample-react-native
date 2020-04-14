@@ -195,20 +195,20 @@ In this section you will create the views for the app to support an [authenticat
 
     const Stack = createStackNavigator();
 
+    // Temporary placeholder view
+    const CalendarComponent = () => (
+      <View style={styles.container}>
+        <Text>Calendar</Text>
+      </View>
+    );
+
     export default class CalendarScreen extends React.Component {
 
-      CalendarComponent = () => (
-        <View style={styles.container}>
-          <Text>Calendar</Text>
-        </View>
-      );
-
-      // Temporary placeholder view
       render() {
         return (
           <Stack.Navigator screenOptions={ headerOptions }>
             <Stack.Screen name='Calendar'
-              component={ this.CalendarComponent }
+              component={ CalendarComponent }
               options={{
                 title: 'Calendar',
                 headerLeft: () => <DrawerToggle/>

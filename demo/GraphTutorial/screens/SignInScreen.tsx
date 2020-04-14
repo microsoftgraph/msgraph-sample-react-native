@@ -27,8 +27,6 @@ export default class SignInScreen extends React.Component {
     try {
       await AuthManager.signInAsync();
 
-      console.log('Signed in');
-
       navigation.reset({
         index: 0,
         routes: [ { name: 'Main' } ]

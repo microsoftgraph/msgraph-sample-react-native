@@ -6,21 +6,9 @@ In this exercise you will incorporate the Microsoft Graph into the application. 
 
 In this section you will extend the `GraphManager` class to add a function to get the user's events and update `CalendarScreen` to use these new functions.
 
-1. Open the **GraphTutorial/graph/GraphManager.js** file and add the following method to the `GraphManager` class.
+1. Open the **GraphTutorial/graph/GraphManager.tsx** file and add the following method to the `GraphManager` class.
 
-    ```js
-    static getEvents = async() => {
-      // GET /me/events
-      return graphClient.api('/me/events')
-        // $select='subject,organizer,start,end'
-        // Only return these fields in results
-        .select('subject,organizer,start,end')
-        // $orderby=createdDateTime DESC
-        // Sort results by when they were created, newest first
-        .orderby('createdDateTime DESC')
-        .get();
-    }
-    ```
+    :::code language="typescript" source="../demo/GraphTutorial/graph/GraphManager.ts" id="GetEventsSnippet":::
 
     > [!NOTE]
     > Consider what the code in `getEvents` is doing.
@@ -29,12 +17,13 @@ In this section you will extend the `GraphManager` class to add a function to ge
     > - The `select` function limits the fields returned for each events to just those the app will actually use.
     > - The `orderby` function sorts the results by the date and time they were created, with the most recent item being first.
 
-1. Open the **GraphTutorial/views/CalendarScreen.js** and replace its entire contents with the following code.
+1. Open the **GraphTutorial/views/CalendarScreen.tsx** and replace its entire contents with the following code.
 
-    ```JSX
+    ```TSX
     import React from 'react';
     import {
       ActivityIndicator,
+      Alert,
       FlatList,
       Modal,
       ScrollView,
@@ -42,18 +31,41 @@ In this section you will extend the `GraphManager` class to add a function to ge
       Text,
       View,
     } from 'react-native';
-    import { Icon } from 'react-native-elements';
+    import { createStackNavigator } from '@react-navigation/stack';
+
+    import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
     import { GraphManager } from '../graph/GraphManager';
 
-    export default class CalendarScreen extends React.Component {
-      static navigationOptions = ({navigation}) => {
-        return {
-          title: 'Calendar',
-          headerLeft: <Icon iconStyle={{ marginLeft: 10, color: 'white' }} size={30} name="menu" onPress={navigation.toggleDrawer} />
-        };
-      }
+    const Stack = createStackNavigator();
+    const initialState: CalendarScreenState = { loadingEvents: true, events: []};
+    const CalendarState = React.createContext(initialState);
 
-      state = {
+    type CalendarScreenState = {
+      loadingEvents: boolean;
+      events: any[];
+    }
+
+    // Temporary JSON view
+    const CalendarComponent = () => {
+      const calendarState = React.useContext(CalendarState);
+
+      return (
+        <View style={styles.container}>
+          <Modal visible={calendarState.loadingEvents}>
+            <View style={styles.loading}>
+              <ActivityIndicator animating={calendarState.loadingEvents} size='large' />
+            </View>
+          </Modal>
+          <ScrollView>
+            <Text>{JSON.stringify(calendarState.events, null, 2)}</Text>
+          </ScrollView>
+        </View>
+      );
+    }
+
+    export default class CalendarScreen extends React.Component {
+
+      state: CalendarScreenState = {
         loadingEvents: true,
         events: []
       };
@@ -67,23 +79,31 @@ In this section you will extend the `GraphManager` class to add a function to ge
             events: events.value
           });
         } catch(error) {
-          alert(error);
+          Alert.alert(
+            'Error getting events',
+            JSON.stringify(error),
+            [
+              {
+                text: 'OK'
+              }
+            ],
+            { cancelable: false }
+          );
         }
       }
 
-      // Temporary JSON view
       render() {
         return (
-          <View style={styles.container}>
-            <Modal visible={this.state.loadingEvents}>
-              <View style={styles.loading}>
-                <ActivityIndicator animating={this.state.loadingEvents} size='large' />
-              </View>
-            </Modal>
-            <ScrollView>
-              <Text>{JSON.stringify(this.state.events, null, 2)}</Text>
-            </ScrollView>
-          </View>
+          <CalendarState.Provider value={this.state}>
+            <Stack.Navigator screenOptions={ headerOptions }>
+              <Stack.Screen name='Calendar'
+                component={ CalendarComponent }
+                options={{
+                  title: 'Calendar',
+                  headerLeft: () => <DrawerToggle/>
+                }} />
+            </Stack.Navigator>
+          </CalendarState.Provider>
         );
       }
     }
@@ -119,25 +139,20 @@ You can now run the app, sign in, and tap the **Calendar** navigation item in th
 
 Now you can replace the JSON dump with something to display the results in a user-friendly manner. In this section, you will add a `FlatList` to the calendar screen to render the events.
 
-1. Open the **GraphTutorial/graph/GraphManager.js** file and add the following `import` statement to the top of the file.
+1. Open the **GraphTutorial/graph/screens/CalendarScreen.tsx** file and add the following `import` statement to the top of the file.
 
-    ```js
+    ```typescript
     import moment from 'moment';
     ```
 
 1. Add the following method **above** the `CalendarScreen` class declaration.
 
-    ```js
-    convertDateTime = (dateTime) => {
-      const utcTime = moment.utc(dateTime);
-      return utcTime.local().format('MMM Do H:mm a');
-    };
-    ```
+    :::code language="TSX" source="../demo/GraphTutorial/screens/CalendarScreen.tsx" id="ConvertDateSnippet":::
 
-1. Replace the `ScrollView` in the `render` method with the following.
+1. Replace the `ScrollView` in the `CalendarComponent` method with the following.
 
     ```JSX
-    <FlatList data={this.state.events}
+    <FlatList data={calendarState.events}
       renderItem={({item}) =>
         <View style={styles.eventItem}>
           <Text style={styles.eventSubject}>{item.subject}</Text>
