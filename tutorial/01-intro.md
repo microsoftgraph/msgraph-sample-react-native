@@ -22,10 +22,10 @@ You should also have either a personal Microsoft account with a mailbox on Outlo
 > [!NOTE]
 > This tutorial was written using the React Native CLI, which has specific prerequisites depending on your operating system and target platforms. See [React Native Getting Started](https://reactnative.dev/docs/environment-setup) for instructions on configuring your development machine. The versions used for this tutorial are listed below. The steps in this guide may work with other versions, but that has not been tested.
 >
-> - Android Studio version 3.6.2 with the Android 9.0 SDK
+> - Android Studio version 4.1 with the Android 9.0 SDK
 > - Java Development Kit version 12.0.2
-> - Xcode version 11.4
-> - Node.js version 12.16.2
+> - Xcode version 12.1
+> - Node.js version 14.15.0
 
 ## Feedback
 
