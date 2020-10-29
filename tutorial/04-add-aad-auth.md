@@ -5,7 +5,7 @@ In this exercise you will extend the application from the previous exercise to s
 1. Create a new directory in the **GraphTutorial** directory named **auth**.
 1. Create a new file in the **GraphTutorial/auth** directory named **AuthConfig.ts**. Add the following code to the file.
 
-    :::code language="typescript" source="../demo/GraphTutorial/auth/AuthConfig.ts.example":::
+    :::code language="typescript" source="../demo/GraphTutorial/auth/AuthConfig.example.ts":::
 
     Replace `YOUR_APP_ID_HERE` with the app ID from your app registration.
 
@@ -20,15 +20,15 @@ In this section you will create an authentication helper class, and update the a
 
     :::code language="typescript" source="../demo/GraphTutorial/auth/AuthManager.ts" id="AuthManagerSnippet":::
 
-1. Open the **GraphTutorial/views/SignInScreen.tsx** file and add the following `import` statement to the top of the file.
+1. Open the **GraphTutorial/App.tsx** file and add the following `import` statement to the top of the file.
 
     ```typescript
-    import { AuthManager } from '../auth/AuthManager';
+    import { AuthManager } from './auth/AuthManager';
     ```
 
-1. Replace the existing `_signInAsync` method with the following.
+1. Replace the existing `authContext` declaration with the following.
 
-    :::code language="typescript" source="../demo/GraphTutorial/screens/SignInScreen.tsx" id="SignInAsyncSnippet":::
+    :::code language="typescript" source="../demo/GraphTutorial/App.tsx" id="AuthContextSnippet" highlight="4-6,9":::
 
 1. Open the **GraphTutorial/views/HomeScreen.tsx** file and add the following `import` statement to the top of the file.
 
@@ -46,20 +46,19 @@ In this section you will create an authentication helper class, and update the a
         // TEMPORARY
         this.setState({userName: accessToken, userLoading: false});
       } catch (error) {
-        alert(error);
+        Alert.alert(
+          'Error getting token',
+          JSON.stringify(error),
+          [
+            {
+              text: 'OK'
+            }
+          ],
+          { cancelable: false }
+        );
       }
     }
     ```
-
-1. Open the **GraphTutorial/menus/DrawerMenu.tsx** file and add the following `import` statement to the top of the file.
-
-    ```typescript
-    import { AuthManager } from '../auth/AuthManager';
-    ```
-
-1. Replace the existing `_signOut` method with the following.
-
-    :::code language="typescript" source="../demo/GraphTutorial/menus/DrawerMenu.tsx" id="SignOutSnippet" highlight="5":::
 
 1. Save your changes and reload the application in your emulator.
 
@@ -113,7 +112,7 @@ In this section you will create a custom authentication provider for the Graph c
     import { GraphManager } from '../graph/GraphManager';
     ```
 
-1. Add the following `componentDidMount` method to the `DrawerMenuContent` class.
+1. Replace the `componentDidMount` method with the following.
 
     :::code language="typescript" source="../demo/GraphTutorial/menus/DrawerMenu.tsx" id="ComponentDidMountSnippet":::
 

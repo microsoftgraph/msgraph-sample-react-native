@@ -1,13 +1,13 @@
 //  Copyright (c) Microsoft.
 //  Licensed under the MIT license.
 
-// <AppSnippet>
 // Adapted from https://reactnavigation.org/docs/auth-flow
 import * as React from 'react';
 import { NavigationContainer, ParamListBase } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack'
 
 import { AuthContext } from './AuthContext';
+import { AuthManager } from './auth/AuthManager';
 import SignInScreen from './screens/SignInScreen';
 import DrawerMenuContent from './menus/DrawerMenu'
 import AuthLoadingScreen from './screens/AuthLoadingScreen';
@@ -59,15 +59,22 @@ export default function App({ navigation }: Props) {
     bootstrapAsync();
   }, []);
 
+  // <AuthContextSnippet>
   const authContext = React.useMemo(
     () => ({
-      signIn: async (data: any) => {
-        dispatch({ type: 'SIGN_IN', token: 'placeholder-token' });
+      signIn: async () => {
+        await AuthManager.signInAsync();
+        const token = await AuthManager.getAccessTokenAsync();
+        dispatch({ type: 'SIGN_IN', token: token });
       },
-      signOut: () => dispatch({ type: 'SIGN_OUT' })
+      signOut: async () => {
+        await AuthManager.signOutAsync();
+        dispatch({ type: 'SIGN_OUT' });
+      }
     }),
     []
   );
+  // </AuthContextSnippet>
 
   return (
     <AuthContext.Provider value={authContext}>
@@ -85,4 +92,3 @@ export default function App({ navigation }: Props) {
     </AuthContext.Provider>
   );
 }
-// </AppSnippet>

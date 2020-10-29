@@ -10,7 +10,10 @@ import {
   View,
 } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
+
+import { AuthManager } from '../auth/AuthManager';
 import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
+import { GraphManager } from '../graph/GraphManager';
 
 const Stack = createStackNavigator();
 const UserState = React.createContext({userLoading: true, userName: ''});
@@ -37,6 +40,28 @@ export default class HomeScreen extends React.Component {
     userLoading: true,
     userName: ''
   };
+
+  // <ComponentDidMountSnippet>
+  async componentDidMount() {
+    try {
+      // Get the signed-in user from Graph
+      const user = await GraphManager.getUserAsync();
+      // Set the user name to the user's given name
+      this.setState({userName: user.givenName, userLoading: false});
+    } catch (error) {
+      Alert.alert(
+        'Error getting user',
+        JSON.stringify(error),
+        [
+          {
+            text: 'OK'
+          }
+        ],
+        { cancelable: false }
+      );
+    }
+  }
+  // </ComponentDidMountSnippet>
 
   render() {
     return (

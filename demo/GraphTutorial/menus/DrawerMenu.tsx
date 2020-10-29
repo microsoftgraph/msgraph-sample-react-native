@@ -23,6 +23,7 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import { AuthContext } from '../AuthContext';
 import HomeScreen from '../screens/HomeScreen';
 import CalendarScreen from '../screens/CalendarScreen';
+import { GraphManager } from '../graph/GraphManager';
 
 const Drawer = createDrawerNavigator();
 
@@ -71,11 +72,37 @@ export default class DrawerMenuContent extends React.Component<DrawerMenuProps, 
     this.context.signOut();
   }
 
-  componentDidMount() {
+  // <ComponentDidMountSnippet>
+  async componentDidMount() {
     this.props.navigation.setOptions({
       headerShown: false,
     });
+
+    try {
+      // Get the signed-in user from Graph
+      const user = await GraphManager.getUserAsync();
+
+      // Update UI with display name and email
+      this.setState({
+        userName: user.displayName,
+        // Work/School accounts have email address in mail attribute
+        // Personal accounts have it in userPrincipalName
+        userEmail: user.mail !== null ? user.mail : user.userPrincipalName,
+      });
+    } catch(error) {
+      Alert.alert(
+        'Error getting user',
+        JSON.stringify(error),
+        [
+          {
+            text: 'OK'
+          }
+        ],
+        { cancelable: false }
+      );
+    }
   }
+  // </ComponentDidMountSnippet>
 
   render() {
     return (
