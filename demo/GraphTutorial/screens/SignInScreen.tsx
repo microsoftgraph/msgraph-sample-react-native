@@ -1,4 +1,4 @@
-//  Copyright (c) Microsoft. All rights reserved.
+//  Copyright (c) Microsoft.
 //  Licensed under the MIT license.
 
 // Adapted from https://reactnavigation.org/docs/auth-flow
@@ -9,50 +9,30 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { NavigationContext } from '@react-navigation/native';
+import { ParamListBase } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack'
 
-import { AuthManager } from '../auth/AuthManager';
+import { AuthContext } from '../AuthContext';
 
-export default class SignInScreen extends React.Component {
-  static contextType = NavigationContext;
+type SignInProps = {
+  navigation: StackNavigationProp<ParamListBase>;
+};
 
-  static navigationOptions = {
-    title: 'Please sign in',
+export default class SignInScreen extends React.Component<SignInProps> {
+  static contextType = AuthContext;
+
+  _signInAsync = async () => {
+    await this.context.signIn();
   };
 
-  // <SignInAsyncSnippet>
-  _signInAsync = async () => {
-    const navigation = this.context;
-
-    try {
-      await AuthManager.signInAsync();
-
-      navigation.reset({
-        index: 0,
-        routes: [ { name: 'Main' } ]
-      });
-    } catch (error) {
-      Alert.alert(
-        'Error signing in',
-        JSON.stringify(error),
-        [
-          {
-            text: 'OK'
-          }
-        ],
-        { cancelable: false }
-      );
-    }
-  }
-  // </SignInAsyncSnippet>
-
-  render() {
-    const navigation = this.context;
-    navigation.setOptions({
+  componentDidMount() {
+    this.props.navigation.setOptions({
       title: 'Please sign in',
       headerShown: true
     });
+  }
 
+  render() {
     return (
       <View style={styles.container}>
         <Button title='Sign In' onPress={this._signInAsync}/>

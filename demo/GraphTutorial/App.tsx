@@ -1,4 +1,4 @@
-//  Copyright (c) Microsoft. All rights reserved.
+//  Copyright (c) Microsoft.
 //  Licensed under the MIT license.
 
 // <AppSnippet>
@@ -7,38 +7,82 @@ import * as React from 'react';
 import { NavigationContainer, ParamListBase } from '@react-navigation/native';
 import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack'
 
-import AuthLoadingScreen from './screens/AuthLoadingScreen';
+import { AuthContext } from './AuthContext';
 import SignInScreen from './screens/SignInScreen';
 import DrawerMenuContent from './menus/DrawerMenu'
+import AuthLoadingScreen from './screens/AuthLoadingScreen';
 
-const AppStack = createStackNavigator();
-const AuthStack = createStackNavigator();
+const Stack = createStackNavigator();
 
 type Props = {
   navigation: StackNavigationProp<ParamListBase>;
 };
 
-const AuthStackComponent = ({ navigation }: Props) => {
-  navigation.setOptions({
-    headerShown: false
-  });
-
-  return (
-    <AuthStack.Navigator initialRouteName='AuthLoading'>
-      <AuthStack.Screen name='AuthLoading' component={AuthLoadingScreen} />
-      <AuthStack.Screen name='SignIn' component={SignInScreen} />
-      <AuthStack.Screen name='Main' component={DrawerMenuContent} />
-    </AuthStack.Navigator>
+export default function App({ navigation }: Props) {
+  const [state, dispatch] = React.useReducer(
+    (prevState: any, action: any) => {
+      switch (action.type) {
+        case 'RESTORE_TOKEN':
+          return {
+            ...prevState,
+            userToken: action.token,
+            isLoading: false
+          };
+        case 'SIGN_IN':
+          return {
+            ...prevState,
+            isSignOut: false,
+            userToken: action.token
+          }
+        case 'SIGN_OUT':
+          return {
+            ...prevState,
+            isSignOut: true,
+            userToken: null
+          }
+      }
+    },
+    {
+      isLoading: true,
+      isSignOut: false,
+      userToken: null
+    }
   );
-}
 
-export default function App() {
+  React.useEffect(() => {
+    const bootstrapAsync = async () => {
+      let userToken = null;
+      // TEMPORARY
+      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+    };
+
+    bootstrapAsync();
+  }, []);
+
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async (data: any) => {
+        dispatch({ type: 'SIGN_IN', token: 'placeholder-token' });
+      },
+      signOut: () => dispatch({ type: 'SIGN_OUT' })
+    }),
+    []
+  );
+
   return (
-    <NavigationContainer>
-      <AppStack.Navigator>
-        <AppStack.Screen name='AuthStack' component={AuthStackComponent} />
-      </AppStack.Navigator>
-    </NavigationContainer>
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          {state.isLoading ? (
+            <Stack.Screen name="Loading" component={AuthLoadingScreen} />
+          ) : state.userToken == null ? (
+            <Stack.Screen name="SignIn" component={SignInScreen} />
+          ) : (
+            <Stack.Screen name="Main" component={DrawerMenuContent} />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }
 // </AppSnippet>

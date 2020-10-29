@@ -1,4 +1,4 @@
-//  Copyright (c) Microsoft. All rights reserved.
+//  Copyright (c) Microsoft.
 //  Licensed under the MIT license.
 
 import React, { FC } from 'react';
@@ -17,12 +17,12 @@ import {
   DrawerItemList,
   DrawerContentComponentProps
 } from '@react-navigation/drawer';
-import { NavigationContext } from '@react-navigation/native';
+import { ParamListBase } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack'
 
+import { AuthContext } from '../AuthContext';
 import HomeScreen from '../screens/HomeScreen';
 import CalendarScreen from '../screens/CalendarScreen';
-import { AuthManager } from '../auth/AuthManager';
-import { GraphManager } from '../graph/GraphManager';
 
 const Drawer = createDrawerNavigator();
 
@@ -39,6 +39,10 @@ type DrawerMenuState = {
   userPhoto: ImageSourcePropType;
 }
 
+type DrawerMenuProps = {
+  navigation: StackNavigationProp<ParamListBase>;
+}
+
 const CustomDrawerContent: FC<CustomDrawerContentProps> = props => (
   <DrawerContentScrollView {...props}>
       <View style={styles.profileView}>
@@ -53,36 +57,8 @@ const CustomDrawerContent: FC<CustomDrawerContentProps> = props => (
   </DrawerContentScrollView>
 );
 
-export default class DrawerMenuContent extends React.Component {
-  static contextType = NavigationContext;
-
-  // <ComponentDidMountSnippet>
-  async componentDidMount() {
-    try {
-      // Get the signed-in user from Graph
-      const user = await GraphManager.getUserAsync();
-
-      // Update UI with display name and email
-      this.setState({
-        userName: user.displayName,
-        // Work/School accounts have email address in mail attribute
-        // Personal accounts have it in userPrincipalName
-        userEmail: user.mail !== null ? user.mail : user.userPrincipalName,
-      });
-    } catch(error) {
-      Alert.alert(
-        'Error getting user',
-        JSON.stringify(error),
-        [
-          {
-            text: 'OK'
-          }
-        ],
-        { cancelable: false }
-      );
-    }
-  }
-  // </ComponentDidMountSnippet>
+export default class DrawerMenuContent extends React.Component<DrawerMenuProps, DrawerMenuState> {
+  static contextType = AuthContext;
 
   state: DrawerMenuState = {
     // TEMPORARY
@@ -91,26 +67,17 @@ export default class DrawerMenuContent extends React.Component {
     userPhoto: require('../images/no-profile-pic.png')
   }
 
-  // <SignOutSnippet>
   _signOut = async () => {
-    const navigation = this.context;
-
-    // Sign out
-    await AuthManager.signOutAsync();
-
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'SignIn' }]
-    });
+    this.context.signOut();
   }
-  // </SignOutSnippet>
 
-  render() {
-    const navigation = this.context;
-    navigation.setOptions({
+  componentDidMount() {
+    this.props.navigation.setOptions({
       headerShown: false,
     });
+  }
 
+  render() {
     return (
       <Drawer.Navigator
         drawerType='front'

@@ -19,9 +19,9 @@ Before moving on, install some additional dependencies that you will use later.
 
 - [react-navigation](https://reactnavigation.org) to handle navigation between views in the app.
 - [react-native-gesture-handler](https://github.com/kmagiera/react-native-gesture-handler), [react-native-safe-area-context](https://github.com/th3rdwave/react-native-safe-area-context), [react-native-screens](https://github.com/kmagiera/react-native-screens), [react-native-reanimate](https://github.com/kmagiera/react-native-reanimated), and [masked-view](https://github.com/react-native-community/react-native-masked-view) required by react-navigation.
-- [react-native-elements](https://react-native-training.github.io/react-native-elements/docs/getting_started.html) and [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) to provide icons for the UI.
+- [react-native-elements](https://reactnativeelements.com/docs/) and [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) to provide icons for the UI.
 - [react-native-app-auth](https://github.com/FormidableLabs/react-native-app-auth) to handle authentication and token management.
-- [async-storage](https://github.com/react-native-community/react-native-async-storage) to provide storage for tokens.
+- [async-storage](https://react-native-async-storage.github.io/async-storage/docs/install) to provide storage for tokens.
 - [moment](https://momentjs.com) to handle parsing and comparison of dates and times.
 - [microsoft-graph-client](https://github.com/microsoftgraph/msgraph-sdk-javascript) for making calls to the Microsoft Graph.
 
@@ -29,11 +29,11 @@ Before moving on, install some additional dependencies that you will use later.
 1. Run the following command.
 
     ```Shell
-    npm install @react-navigation/native@5.1.5 @react-navigation/drawer@5.4.1 @react-navigation/stack@5.2.10
-    npm install @react-native-community/masked-view@0.1.7 react-native-safe-area-context@0.7.3
-    npm install react-native-reanimated@1.8.0 react-native-screens@2.4.0 @react-native-community/async-storage@1.9.0
-    npm install react-native-elements@1.2.7 react-native-vector-icons@6.6.0 react-native-gesture-handler@1.6.1
-    npm install react-native-app-auth@5.1.1 moment@2.24.0 @microsoft/microsoft-graph-client@2.0.0
+    npm install @react-navigation/native@5.8.1 @react-navigation/drawer@5.10.1 @react-navigation/stack@5.11.0
+    npm install @react-native-community/masked-view@0.1.10 react-native-safe-area-context@3.1.8
+    npm install react-native-reanimated@1.13.1 react-native-screens@2.12.0 @react-native-async-storage/async-storage@1.13.1
+    npm install react-native-elements@2.3.2 react-native-vector-icons@7.1.0 react-native-gesture-handler@1.8.0
+    npm install react-native-app-auth@6.0.0 moment@2.29.1 @microsoft/microsoft-graph-client@2.1.0
     ```
 
 ### Link and configure dependencies for iOS
@@ -114,6 +114,10 @@ In this section you will create the views for the app to support an [authenticat
     ```javascript
     import 'react-native-gesture-handler';
     ```
+
+1. Create a new file in the **GraphTutorial** directory named **AuthContext.tsx** and add the following code.
+
+    :::code language="typescript" source="../demo/GraphTutorial/AuthContext.tsx" id="AuthContextSnippet":::
 
 1. Create a new directory in the **GraphTutorial** directory named **screens**.
 1. Create a new file in the **GraphTutorial/screens** directory named **HomeScreen.tsx**. Add the following code to the file.
@@ -238,32 +242,30 @@ In this section you will create the views for the app to support an [authenticat
       StyleSheet,
       View,
     } from 'react-native';
-    import { NavigationContext } from '@react-navigation/native';
+    import { ParamListBase } from '@react-navigation/native';
+    import { StackNavigationProp } from '@react-navigation/stack'
 
-    export default class SignInScreen extends React.Component {
-      static contextType = NavigationContext;
+    import { AuthContext } from '../AuthContext';
 
-      static navigationOptions = {
-        title: 'Please sign in',
-      };
+    type SignInProps = {
+      navigation: StackNavigationProp<ParamListBase>;
+    };
+
+    export default class SignInScreen extends React.Component<SignInProps> {
+      static contextType = AuthContext;
 
       _signInAsync = async () => {
-        const navigation = this.context;
-
-        // TEMPORARY
-        navigation.reset({
-          index: 0,
-          routes: [ { name: 'Main' } ]
-        });
+        await this.context.signIn();
       };
 
-      render() {
-        const navigation = this.context;
-        navigation.setOptions({
+      componentDidMount() {
+        this.props.navigation.setOptions({
           title: 'Please sign in',
           headerShown: true
         });
+      }
 
+      render() {
         return (
           <View style={styles.container}>
             <Button title='Sign In' onPress={this._signInAsync}/>
@@ -313,8 +315,10 @@ In this section you will create a menu for the application, and update the appli
       DrawerItemList,
       DrawerContentComponentProps
     } from '@react-navigation/drawer';
-    import { NavigationContext } from '@react-navigation/native';
+    import { ParamListBase } from '@react-navigation/native';
+    import { StackNavigationProp } from '@react-navigation/stack'
 
+    import { AuthContext } from '../AuthContext';
     import HomeScreen from '../screens/HomeScreen';
     import CalendarScreen from '../screens/CalendarScreen';
 
@@ -333,6 +337,10 @@ In this section you will create a menu for the application, and update the appli
       userPhoto: ImageSourcePropType;
     }
 
+    type DrawerMenuProps = {
+      navigation: StackNavigationProp<ParamListBase>;
+    }
+
     const CustomDrawerContent: FC<CustomDrawerContentProps> = props => (
       <DrawerContentScrollView {...props}>
           <View style={styles.profileView}>
@@ -347,8 +355,8 @@ In this section you will create a menu for the application, and update the appli
       </DrawerContentScrollView>
     );
 
-    export default class DrawerMenuContent extends React.Component {
-      static contextType = NavigationContext;
+    export default class DrawerMenuContent extends React.Component<DrawerMenuProps, DrawerMenuState> {
+      static contextType = AuthContext;
 
       state: DrawerMenuState = {
         // TEMPORARY
@@ -358,21 +366,16 @@ In this section you will create a menu for the application, and update the appli
       }
 
       _signOut = async () => {
-        const navigation = this.context;
-        // Sign out
-        // TEMPORARY
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'SignIn' }]
+        this.context.signOut();
+      }
+
+      componentDidMount() {
+        this.props.navigation.setOptions({
+          headerShown: false,
         });
       }
 
       render() {
-        const navigation = this.context;
-        navigation.setOptions({
-          headerShown: false,
-        });
-
         return (
           <Drawer.Navigator
             drawerType='front'
