@@ -22,29 +22,12 @@ import { StackNavigationProp } from '@react-navigation/stack'
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { AuthContext } from '../AuthContext';
+import { UserContext } from '../UserContext';
 import HomeScreen from '../screens/HomeScreen';
 import CalendarScreen from '../screens/CalendarScreen';
 import { GraphManager } from '../graph/GraphManager';
 
 const Drawer = createDrawerNavigator();
-
-type DrawerMenuState = {
-  userLoading: boolean;
-  userFirstName: string;
-  userFullName: string;
-  userEmail: string;
-  userTimeZone: string;
-  userPhoto: ImageSourcePropType;
-}
-
-export const UserContext = React.createContext<DrawerMenuState>({
-  userLoading: true,
-  userFirstName: '',
-  userFullName: '',
-  userEmail: '',
-  userTimeZone: '',
-  userPhoto: require('../images/no-profile-pic.png')
-});
 
 type CustomDrawerContentProps = DrawerContentComponentProps & {
   userName: string;
@@ -71,10 +54,10 @@ const CustomDrawerContent: FC<CustomDrawerContentProps> = props => (
   </DrawerContentScrollView>
 );
 
-export default class DrawerMenuContent extends React.Component<DrawerMenuProps, DrawerMenuState> {
+export default class DrawerMenuContent extends React.Component<DrawerMenuProps> {
   static contextType = AuthContext;
 
-  state: DrawerMenuState = {
+  state = {
     // TEMPORARY
     userLoading: true,
     userFirstName: 'Adele',
@@ -124,6 +107,8 @@ export default class DrawerMenuContent extends React.Component<DrawerMenuProps, 
   // </ComponentDidMountSnippet>
 
   render() {
+    const userLoaded = !this.state.userLoading;
+
     return (
       <UserContext.Provider value={this.state}>
         <Drawer.Navigator
@@ -138,9 +123,11 @@ export default class DrawerMenuContent extends React.Component<DrawerMenuProps, 
           <Drawer.Screen name='Home'
             component={HomeScreen}
             options={{drawerLabel: 'Home'}} />
-          <Drawer.Screen name='Calendar'
-            component={CalendarScreen}
-            options={{drawerLabel: 'Calendar'}} />
+          { userLoaded &&
+            <Drawer.Screen name='Calendar'
+              component={CalendarScreen}
+              options={{drawerLabel: 'Calendar'}} />
+          }
         </Drawer.Navigator>
       </UserContext.Provider>
     );

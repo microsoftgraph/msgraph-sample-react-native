@@ -49,8 +49,9 @@ export class AuthManager {
 
       if (now.isSameOrAfter(expire)) {
         // Expired, refresh
+        console.log('Refreshing token');
         const refreshToken = await AsyncStorage.getItem('refreshToken');
-
+        console.log(`Refresh token: ${refreshToken}`);
         const result = await refresh(config, { refreshToken: refreshToken || '' });
 
         // Store the new access token, refresh token, and expiration time in storage

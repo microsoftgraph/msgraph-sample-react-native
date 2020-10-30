@@ -89,7 +89,7 @@ In this section you will create a custom authentication provider for the Graph c
     export class GraphManager {
       static getUserAsync = async() => {
         // GET /me
-        return graphClient
+        return await graphClient
           .api('/me')
           .select('displayName,givenName,mail,mailboxSettings,userPrincipalName')
           .get();

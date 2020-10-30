@@ -23,6 +23,7 @@ Before moving on, install some additional dependencies that you will use later.
 - [react-native-app-auth](https://github.com/FormidableLabs/react-native-app-auth) to handle authentication and token management.
 - [async-storage](https://react-native-async-storage.github.io/async-storage/docs/install) to provide storage for tokens.
 - [moment](https://momentjs.com) to handle parsing and comparison of dates and times.
+- [windows-iana](https://github.com/rubenillodo/windows-iana) for translating Windows time zones to IANA format.
 - [microsoft-graph-client](https://github.com/microsoftgraph/msgraph-sdk-javascript) for making calls to the Microsoft Graph.
 
 1. Open your CLI in the root directory of your React Native project.
@@ -30,10 +31,10 @@ Before moving on, install some additional dependencies that you will use later.
 
     ```Shell
     npm install @react-navigation/native@5.8.1 @react-navigation/drawer@5.10.1 @react-navigation/stack@5.11.0
-    npm install @react-native-community/masked-view@0.1.10 react-native-safe-area-context@3.1.8
+    npm install @react-native-community/masked-view@0.1.10 react-native-safe-area-context@3.1.8 windows-iana
     npm install react-native-reanimated@1.13.1 react-native-screens@2.12.0 @react-native-async-storage/async-storage@1.13.1
     npm install react-native-elements@2.3.2 react-native-vector-icons@7.1.0 react-native-gesture-handler@1.8.0
-    npm install react-native-app-auth@6.0.0 moment@2.29.1 @microsoft/microsoft-graph-client@2.1.0
+    npm install react-native-app-auth@6.0.0 moment@2.29.1 moment-timezone @microsoft/microsoft-graph-client@2.1.0
     npm install @microsoft/microsoft-graph-types --save-dev
     ```
 
@@ -119,6 +120,10 @@ In this section you will create the views for the app to support an [authenticat
 1. Create a new file in the **GraphTutorial** directory named **AuthContext.tsx** and add the following code.
 
     :::code language="typescript" source="../demo/GraphTutorial/AuthContext.tsx" id="AuthContextSnippet":::
+
+1. Create a new file in the **GraphTutorial** directory named **UserContext.tsx** and add the following code.
+
+    :::code language="typescript" source="../demo/GraphTutorial/UserContext.tsx" id="UserContextSnippet":::
 
 1. Create a new directory in the **GraphTutorial** directory named **screens**.
 1. Create a new file in the **GraphTutorial/screens** directory named **HomeScreen.tsx**. Add the following code to the file.
@@ -259,28 +264,11 @@ In this section you will create a menu for the application, and update the appli
     import { StackNavigationProp } from '@react-navigation/stack'
 
     import { AuthContext } from '../AuthContext';
+    import { UserContext } from '../UserContext';
     import HomeScreen from '../screens/HomeScreen';
     import CalendarScreen from '../screens/CalendarScreen';
 
     const Drawer = createDrawerNavigator();
-
-    type DrawerMenuState = {
-      userLoading: boolean;
-      userFirstName: string;
-      userFullName: string;
-      userEmail: string;
-      userTimeZone: string;
-      userPhoto: ImageSourcePropType;
-    }
-
-    export const UserContext = React.createContext<DrawerMenuState>({
-      userLoading: true,
-      userFirstName: '',
-      userFullName: '',
-      userEmail: '',
-      userTimeZone: '',
-      userPhoto: require('../images/no-profile-pic.png')
-    });
 
     type CustomDrawerContentProps = DrawerContentComponentProps & {
       userName: string;
@@ -307,10 +295,10 @@ In this section you will create a menu for the application, and update the appli
       </DrawerContentScrollView>
     );
 
-    export default class DrawerMenuContent extends React.Component<DrawerMenuProps, DrawerMenuState> {
+    export default class DrawerMenuContent extends React.Component<DrawerMenuProps> {
       static contextType = AuthContext;
 
-      state: DrawerMenuState = {
+      state = {
         // TEMPORARY
         userLoading: true,
         userFirstName: 'Adele',
@@ -331,6 +319,8 @@ In this section you will create a menu for the application, and update the appli
       }
 
       render() {
+        const userLoaded = !this.state.userLoading;
+
         return (
           <UserContext.Provider value={this.state}>
             <Drawer.Navigator
@@ -345,9 +335,11 @@ In this section you will create a menu for the application, and update the appli
               <Drawer.Screen name='Home'
                 component={HomeScreen}
                 options={{drawerLabel: 'Home'}} />
-              <Drawer.Screen name='Calendar'
-                component={CalendarScreen}
-                options={{drawerLabel: 'Calendar'}} />
+              { userLoaded &&
+                <Drawer.Screen name='Calendar'
+                  component={CalendarScreen}
+                  options={{drawerLabel: 'Calendar'}} />
+              }
             </Drawer.Navigator>
           </UserContext.Provider>
         );

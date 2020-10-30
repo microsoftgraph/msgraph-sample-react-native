@@ -12,7 +12,7 @@ import {
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
-import { UserContext } from '../menus/DrawerMenu';
+import { UserContext } from '../UserContext';
 
 const Stack = createStackNavigator();
 

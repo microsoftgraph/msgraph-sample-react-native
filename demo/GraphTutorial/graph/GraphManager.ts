@@ -16,22 +16,25 @@ const graphClient = Client.initWithMiddleware(clientOptions);
 export class GraphManager {
   static getUserAsync = async() => {
     // GET /me
-    return graphClient
+    return await graphClient
       .api('/me')
       .select('displayName,givenName,mail,mailboxSettings,userPrincipalName')
       .get();
   }
 
   // <GetCalendarViewSnippet>
-  static getCalendarView = async() => {
+  static getCalendarView = async(start: string, end: string, timezone: string) => {
     // GET /me/calendarview
-    return graphClient.api('/me/events')
+    return await graphClient.api('/me/calendarview')
+      .header('Prefer', `outlook.timezone="${timezone}"`)
+      .query({ startDateTime: start, endDateTime: end})
       // $select='subject,organizer,start,end'
       // Only return these fields in results
       .select('subject,organizer,start,end')
       // $orderby=createdDateTime DESC
       // Sort results by when they were created, newest first
-      .orderby('createdDateTime DESC')
+      .orderby('start/dateTime')
+      .top(50)
       .get();
   }
   // </GetCalendarViewSnippet>
