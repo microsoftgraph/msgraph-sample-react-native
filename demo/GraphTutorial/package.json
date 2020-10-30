@@ -30,6 +30,7 @@
   "devDependencies": {
     "@babel/core": "^7.8.4",
     "@babel/runtime": "^7.8.4",
+    "@microsoft/microsoft-graph-types": "^1.26.0",
     "@react-native-community/eslint-config": "^1.1.0",
     "@types/jest": "^25.2.3",
     "@types/react-native": "^0.63.2",

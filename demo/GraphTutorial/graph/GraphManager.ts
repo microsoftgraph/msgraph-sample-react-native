@@ -16,6 +16,23 @@ const graphClient = Client.initWithMiddleware(clientOptions);
 export class GraphManager {
   static getUserAsync = async() => {
     // GET /me
-    return graphClient.api('/me').get();
+    return graphClient
+      .api('/me')
+      .select('displayName,givenName,mail,mailboxSettings,userPrincipalName')
+      .get();
   }
+
+  // <GetCalendarViewSnippet>
+  static getCalendarView = async() => {
+    // GET /me/calendarview
+    return graphClient.api('/me/events')
+      // $select='subject,organizer,start,end'
+      // Only return these fields in results
+      .select('subject,organizer,start,end')
+      // $orderby=createdDateTime DESC
+      // Sort results by when they were created, newest first
+      .orderby('createdDateTime DESC')
+      .get();
+  }
+  // </GetCalendarViewSnippet>
 }

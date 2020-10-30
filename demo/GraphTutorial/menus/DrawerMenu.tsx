@@ -19,6 +19,7 @@ import {
 } from '@react-navigation/drawer';
 import { ParamListBase } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack'
+import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { AuthContext } from '../AuthContext';
 import HomeScreen from '../screens/HomeScreen';
@@ -27,17 +28,29 @@ import { GraphManager } from '../graph/GraphManager';
 
 const Drawer = createDrawerNavigator();
 
+type DrawerMenuState = {
+  userLoading: boolean;
+  userFirstName: string;
+  userFullName: string;
+  userEmail: string;
+  userTimeZone: string;
+  userPhoto: ImageSourcePropType;
+}
+
+export const UserContext = React.createContext<DrawerMenuState>({
+  userLoading: true,
+  userFirstName: '',
+  userFullName: '',
+  userEmail: '',
+  userTimeZone: '',
+  userPhoto: require('../images/no-profile-pic.png')
+});
+
 type CustomDrawerContentProps = DrawerContentComponentProps & {
   userName: string;
   userEmail: string;
   userPhoto: ImageSourcePropType;
   signOut: () => void;
-}
-
-type DrawerMenuState = {
-  userName: string;
-  userEmail: string;
-  userPhoto: ImageSourcePropType;
 }
 
 type DrawerMenuProps = {
@@ -63,8 +76,11 @@ export default class DrawerMenuContent extends React.Component<DrawerMenuProps, 
 
   state: DrawerMenuState = {
     // TEMPORARY
-    userName: 'Adele Vance',
+    userLoading: true,
+    userFirstName: 'Adele',
+    userFullName: 'Adele Vance',
     userEmail: 'adelev@contoso.com',
+    userTimeZone: 'UTC',
     userPhoto: require('../images/no-profile-pic.png')
   }
 
@@ -80,14 +96,17 @@ export default class DrawerMenuContent extends React.Component<DrawerMenuProps, 
 
     try {
       // Get the signed-in user from Graph
-      const user = await GraphManager.getUserAsync();
+      const user: MicrosoftGraph.User = await GraphManager.getUserAsync();
 
       // Update UI with display name and email
       this.setState({
-        userName: user.displayName,
+        userLoading: false,
+        userFirstName: user.givenName!,
+        userFullName: user.displayName!,
         // Work/School accounts have email address in mail attribute
         // Personal accounts have it in userPrincipalName
-        userEmail: user.mail !== null ? user.mail : user.userPrincipalName,
+        userEmail: user.mail! || user.userPrincipalName!,
+        userTimeZone: user.mailboxSettings?.timeZone!
       });
     } catch(error) {
       Alert.alert(
@@ -106,22 +125,24 @@ export default class DrawerMenuContent extends React.Component<DrawerMenuProps, 
 
   render() {
     return (
-      <Drawer.Navigator
-        drawerType='front'
-        drawerContent={props => (
-          <CustomDrawerContent {...props}
-            userName={this.state.userName}
-            userEmail={this.state.userEmail}
-            userPhoto={this.state.userPhoto}
-            signOut={this._signOut} />
-        )}>
-        <Drawer.Screen name='Home'
-          component={HomeScreen}
-          options={{drawerLabel: 'Home'}} />
-        <Drawer.Screen name='Calendar'
-          component={CalendarScreen}
-          options={{drawerLabel: 'Calendar'}} />
-      </Drawer.Navigator>
+      <UserContext.Provider value={this.state}>
+        <Drawer.Navigator
+          drawerType='front'
+          drawerContent={props => (
+            <CustomDrawerContent {...props}
+              userName={this.state.userFullName}
+              userEmail={this.state.userEmail}
+              userPhoto={this.state.userPhoto}
+              signOut={this._signOut} />
+          )}>
+          <Drawer.Screen name='Home'
+            component={HomeScreen}
+            options={{drawerLabel: 'Home'}} />
+          <Drawer.Screen name='Calendar'
+            component={CalendarScreen}
+            options={{drawerLabel: 'Calendar'}} />
+        </Drawer.Navigator>
+      </UserContext.Provider>
     );
   }
 }

@@ -34,6 +34,7 @@ Before moving on, install some additional dependencies that you will use later.
     npm install react-native-reanimated@1.13.1 react-native-screens@2.12.0 @react-native-async-storage/async-storage@1.13.1
     npm install react-native-elements@2.3.2 react-native-vector-icons@7.1.0 react-native-gesture-handler@1.8.0
     npm install react-native-app-auth@6.0.0 moment@2.29.1 @microsoft/microsoft-graph-client@2.1.0
+    npm install @microsoft/microsoft-graph-types --save-dev
     ```
 
 ### Link and configure dependencies for iOS
@@ -122,68 +123,7 @@ In this section you will create the views for the app to support an [authenticat
 1. Create a new directory in the **GraphTutorial** directory named **screens**.
 1. Create a new file in the **GraphTutorial/screens** directory named **HomeScreen.tsx**. Add the following code to the file.
 
-    ```typescript
-    import React from 'react';
-    import {
-      ActivityIndicator,
-      Alert,
-      StyleSheet,
-      Text,
-      View,
-    } from 'react-native';
-    import { createStackNavigator } from '@react-navigation/stack';
-    import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
-
-    const Stack = createStackNavigator();
-    const UserState = React.createContext({userLoading: true, userName: ''});
-
-    type HomeScreenState = {
-      userLoading: boolean;
-      userName: string;
-    }
-
-    const HomeComponent = () => {
-      const userState = React.useContext(UserState);
-
-      return (
-        <View style={styles.container}>
-          <ActivityIndicator animating={userState.userLoading} size='large' />
-          {userState.userLoading ? null: <Text>Hello {userState.userName}!</Text>}
-        </View>
-      );
-    }
-
-    export default class HomeScreen extends React.Component {
-
-      state: HomeScreenState = {
-        userLoading: true,
-        userName: ''
-      };
-
-      render() {
-        return (
-          <UserState.Provider value={this.state}>
-              <Stack.Navigator screenOptions={headerOptions}>
-                <Stack.Screen name='Home'
-                  component={HomeComponent}
-                  options={{
-                    title: 'Welcome',
-                    headerLeft: () => <DrawerToggle/>
-                  }} />
-              </Stack.Navigator>
-          </UserState.Provider>
-        );
-      }
-    }
-
-    const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-      }
-    });
-    ```
+    :::code language="typescript" source="../demo/GraphTutorial/screens/HomeScreen.tsx" id="HomeScreenSnippet":::
 
 1. Create a new file in the **GraphTutorial/screens** directory named **CalendarScreen.tsx**. Add the following code to the file.
 
@@ -324,17 +264,29 @@ In this section you will create a menu for the application, and update the appli
 
     const Drawer = createDrawerNavigator();
 
+    type DrawerMenuState = {
+      userLoading: boolean;
+      userFirstName: string;
+      userFullName: string;
+      userEmail: string;
+      userTimeZone: string;
+      userPhoto: ImageSourcePropType;
+    }
+
+    export const UserContext = React.createContext<DrawerMenuState>({
+      userLoading: true,
+      userFirstName: '',
+      userFullName: '',
+      userEmail: '',
+      userTimeZone: '',
+      userPhoto: require('../images/no-profile-pic.png')
+    });
+
     type CustomDrawerContentProps = DrawerContentComponentProps & {
       userName: string;
       userEmail: string;
       userPhoto: ImageSourcePropType;
       signOut: () => void;
-    }
-
-    type DrawerMenuState = {
-      userName: string;
-      userEmail: string;
-      userPhoto: ImageSourcePropType;
     }
 
     type DrawerMenuProps = {
@@ -360,8 +312,11 @@ In this section you will create a menu for the application, and update the appli
 
       state: DrawerMenuState = {
         // TEMPORARY
-        userName: 'Adele Vance',
+        userLoading: true,
+        userFirstName: 'Adele',
+        userFullName: 'Adele Vance',
         userEmail: 'adelev@contoso.com',
+        userTimeZone: 'UTC',
         userPhoto: require('../images/no-profile-pic.png')
       }
 
@@ -369,7 +324,7 @@ In this section you will create a menu for the application, and update the appli
         this.context.signOut();
       }
 
-      componentDidMount() {
+      async componentDidMount() {
         this.props.navigation.setOptions({
           headerShown: false,
         });
@@ -377,22 +332,24 @@ In this section you will create a menu for the application, and update the appli
 
       render() {
         return (
-          <Drawer.Navigator
-            drawerType='front'
-            drawerContent={props => (
-              <CustomDrawerContent {...props}
-                userName={this.state.userName}
-                userEmail={this.state.userEmail}
-                userPhoto={this.state.userPhoto}
-                signOut={this._signOut} />
-            )}>
-            <Drawer.Screen name='Home'
-              component={HomeScreen}
-              options={{drawerLabel: 'Home'}} />
-            <Drawer.Screen name='Calendar'
-              component={CalendarScreen}
-              options={{drawerLabel: 'Calendar'}} />
-          </Drawer.Navigator>
+          <UserContext.Provider value={this.state}>
+            <Drawer.Navigator
+              drawerType='front'
+              drawerContent={props => (
+                <CustomDrawerContent {...props}
+                  userName={this.state.userFullName}
+                  userEmail={this.state.userEmail}
+                  userPhoto={this.state.userPhoto}
+                  signOut={this._signOut} />
+              )}>
+              <Drawer.Screen name='Home'
+                component={HomeScreen}
+                options={{drawerLabel: 'Home'}} />
+              <Drawer.Screen name='Calendar'
+                component={CalendarScreen}
+                options={{drawerLabel: 'Calendar'}} />
+            </Drawer.Navigator>
+          </UserContext.Provider>
         );
       }
     }

@@ -4,7 +4,7 @@ In this exercise you will incorporate the Microsoft Graph into the application. 
 
 ## Get calendar events from Outlook
 
-In this section you will extend the `GraphManager` class to add a function to get the user's events and update `CalendarScreen` to use these new functions.
+In this section you will extend the `GraphManager` class to add a function to get the user's events for the current week and update `CalendarScreen` to use these new functions.
 
 1. Open the **GraphTutorial/graph/GraphManager.tsx** file and add the following method to the `GraphManager` class.
 

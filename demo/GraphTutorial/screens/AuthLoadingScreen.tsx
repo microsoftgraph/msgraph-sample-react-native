@@ -10,7 +10,6 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { NavigationContext } from '@react-navigation/native';
 
 export default class AuthLoadingScreen extends React.Component {
   render() {

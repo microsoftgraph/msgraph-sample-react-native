@@ -30,33 +30,31 @@ In this section you will create an authentication helper class, and update the a
 
     :::code language="typescript" source="../demo/GraphTutorial/App.tsx" id="AuthContextSnippet" highlight="4-6,9":::
 
-1. Open the **GraphTutorial/views/HomeScreen.tsx** file and add the following `import` statement to the top of the file.
+1. Open the **GraphTutorial/menus/DrawerMenu.tsx** file and add the following `import` statement to the top of the file.
 
     ```typescript
     import { AuthManager } from '../auth/AuthManager';
     ```
 
-1. Add the following method to the `HomeScreen` class.
+1. Add the following code to the `componentDidMount` function.
 
     ```typescript
-    async componentDidMount() {
-      try {
-        const accessToken = await AuthManager.getAccessTokenAsync();
+    try {
+      const accessToken = await AuthManager.getAccessTokenAsync();
 
-        // TEMPORARY
-        this.setState({userName: accessToken, userLoading: false});
-      } catch (error) {
-        Alert.alert(
-          'Error getting token',
-          JSON.stringify(error),
-          [
-            {
-              text: 'OK'
-            }
-          ],
-          { cancelable: false }
-        );
-      }
+      // TEMPORARY
+      this.setState({userFirstName: accessToken, userLoading: false});
+    } catch (error) {
+      Alert.alert(
+        'Error getting token',
+        JSON.stringify(error),
+        [
+          {
+            text: 'OK'
+          }
+        ],
+        { cancelable: false }
+      );
     }
     ```
 
@@ -91,20 +89,13 @@ In this section you will create a custom authentication provider for the Graph c
     export class GraphManager {
       static getUserAsync = async() => {
         // GET /me
-        return graphClient.api('/me').get();
+        return graphClient
+          .api('/me')
+          .select('displayName,givenName,mail,mailboxSettings,userPrincipalName')
+          .get();
       }
     }
     ```
-
-1. Open the **GraphTutorial/views/HomeScreen.tsx** file and add the following `import` statement to the top of the file.
-
-    ```typescript
-    import { GraphManager } from '../graph/GraphManager';
-    ```
-
-1. Replace the `componentDidMount` method with the following.
-
-    :::code language="typescript" source="../demo/GraphTutorial/screens/HomeScreen.tsx" id="ComponentDidMountSnippet" highlight="3-6,9":::
 
 1. Open the **GraphTutorial/views/DrawerMenu.tsx** file and add the following `import` statement to the top of the file.
 

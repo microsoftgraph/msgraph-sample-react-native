@@ -5,12 +5,12 @@
 import * as React from 'react';
 
 type AuthContextType = {
-  signIn: (data: any) => Promise<void>;
+  signIn: () => Promise<void>;
   signOut: () => void;
 }
 
 export const AuthContext = React.createContext<AuthContextType>({
-  signIn: async (data: any) => {},
+  signIn: async () => {},
   signOut: () => {}
 });
 // <AuthContextSnippet>
