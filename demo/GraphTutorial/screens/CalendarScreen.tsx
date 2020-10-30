@@ -43,8 +43,6 @@ const CalendarComponent = ({navigation}: any) => {
           <ActivityIndicator animating={calendarState.loadingEvents} size='large' />
         </View>
       </Modal>
-      <Button title='New event'
-        onPress={() => navigation.navigate('NewEvent')} />
       <FlatList data={calendarState.events}
         renderItem={({item}) =>
           <View style={styles.eventItem}>

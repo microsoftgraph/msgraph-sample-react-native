@@ -182,8 +182,6 @@ Now you can replace the JSON dump with something to display the results in a use
 1. Replace the `ScrollView` in the `CalendarComponent` method with the following.
 
     ```typescript
-    <Button title='New event'
-      onPress={() => navigation.navigate('NewEvent')} />
     <FlatList data={calendarState.events}
       renderItem={({item}) =>
         <View style={styles.eventItem}>
