@@ -1,5 +1,5 @@
-//  Copyright (c) Microsoft. All rights reserved.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
 import React from 'react';
 import {
@@ -7,26 +7,31 @@ import {
   Alert,
   FlatList,
   Modal,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import moment from 'moment';
+import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import moment from 'moment-timezone';
+import { findOneIana } from 'windows-iana';
 
-import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
+import { UserContext } from '../UserContext';
 import { GraphManager } from '../graph/GraphManager';
 
 const Stack = createStackNavigator();
-const initialState: CalendarScreenState = { loadingEvents: true, events: []};
-const CalendarState = React.createContext(initialState);
+const CalendarState = React.createContext<CalendarScreenState>({
+  loadingEvents: true,
+  events: []
+});
 
 type CalendarScreenState = {
   loadingEvents: boolean;
-  events: any[];
+  events: MicrosoftGraph.Event[];
 }
 
-// Temporary JSON view
 const CalendarComponent = () => {
   const calendarState = React.useContext(CalendarState);
 
@@ -34,16 +39,19 @@ const CalendarComponent = () => {
     <View style={styles.container}>
       <Modal visible={calendarState.loadingEvents}>
         <View style={styles.loading}>
-          <ActivityIndicator animating={calendarState.loadingEvents} size='large' />
+          <ActivityIndicator
+            color={Platform.OS === 'android' ? '#276b80' : undefined}
+            animating={calendarState.loadingEvents}
+            size='large' />
         </View>
       </Modal>
       <FlatList data={calendarState.events}
         renderItem={({item}) =>
           <View style={styles.eventItem}>
             <Text style={styles.eventSubject}>{item.subject}</Text>
-            <Text style={styles.eventOrganizer}>{item.organizer.emailAddress.name}</Text>
+            <Text style={styles.eventOrganizer}>{item.organizer!.emailAddress!.name!}</Text>
             <Text style={styles.eventDuration}>
-              {convertDateTime(item.start.dateTime)} - {convertDateTime(item.end.dateTime)}
+              {convertDateTime(item.start!.dateTime!)} - {convertDateTime(item.end!.dateTime!)}
             </Text>
           </View>
         } />
@@ -53,12 +61,12 @@ const CalendarComponent = () => {
 
 // <ConvertDateSnippet>
 const convertDateTime = (dateTime: string): string => {
-  const utcTime = moment.utc(dateTime);
-  return utcTime.local().format('MMM Do H:mm a');
+  return moment(dateTime).format('MMM Do H:mm a');
 };
 // </ConvertDateSnippet>
 
 export default class CalendarScreen extends React.Component {
+  static contextType = UserContext;
 
   state: CalendarScreenState = {
     loadingEvents: true,
@@ -67,7 +75,27 @@ export default class CalendarScreen extends React.Component {
 
   async componentDidMount() {
     try {
-      const events = await GraphManager.getEvents();
+      const tz = this.context.userTimeZone || 'UTC';
+      // Convert user's Windows time zone ("Pacific Standard Time")
+      // to IANA format ("America/Los_Angeles")
+      // Moment.js needs IANA format
+      const ianaTimeZone = findOneIana(tz);
+
+      // Get midnight on the start of the current week in the user's
+      // time zone, but in UTC. For example, for PST, the time value
+      // would be 07:00:00Z
+      const startOfWeek = moment
+        .tz(ianaTimeZone!.valueOf())
+        .startOf('week')
+        .utc();
+
+      const endOfWeek = moment(startOfWeek)
+        .add(7, 'day');
+
+      const events = await GraphManager.getCalendarView(
+        startOfWeek.format(),
+        endOfWeek.format(),
+        tz);
 
       this.setState({
         loadingEvents: false,
@@ -84,19 +112,20 @@ export default class CalendarScreen extends React.Component {
         ],
         { cancelable: false }
       );
+
     }
   }
 
   render() {
     return (
       <CalendarState.Provider value={this.state}>
-        <Stack.Navigator screenOptions={ headerOptions }>
+        <Stack.Navigator>
           <Stack.Screen name='Calendar'
             component={ CalendarComponent }
             options={{
-              title: 'Calendar',
-              headerLeft: () => <DrawerToggle/>
+              headerShown: false
             }} />
+
         </Stack.Navigator>
       </CalendarState.Provider>
     );

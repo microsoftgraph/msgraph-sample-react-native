@@ -1,5 +1,5 @@
-//  Copyright (c) Microsoft. All rights reserved.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
 import React, { FC } from 'react';
 import {
@@ -17,11 +17,15 @@ import {
   DrawerItemList,
   DrawerContentComponentProps
 } from '@react-navigation/drawer';
-import { NavigationContext } from '@react-navigation/native';
+import { ParamListBase } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack'
+import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
+import { AuthContext } from '../AuthContext';
+import { UserContext } from '../UserContext';
 import HomeScreen from '../screens/HomeScreen';
 import CalendarScreen from '../screens/CalendarScreen';
-import { AuthManager } from '../auth/AuthManager';
+import NewEventScreen from '../screens/NewEventScreen';
 import { GraphManager } from '../graph/GraphManager';
 
 const Drawer = createDrawerNavigator();
@@ -33,10 +37,8 @@ type CustomDrawerContentProps = DrawerContentComponentProps & {
   signOut: () => void;
 }
 
-type DrawerMenuState = {
-  userName: string;
-  userEmail: string;
-  userPhoto: ImageSourcePropType;
+type DrawerMenuProps = {
+  navigation: StackNavigationProp<ParamListBase>;
 }
 
 const CustomDrawerContent: FC<CustomDrawerContentProps> = props => (
@@ -53,21 +55,42 @@ const CustomDrawerContent: FC<CustomDrawerContentProps> = props => (
   </DrawerContentScrollView>
 );
 
-export default class DrawerMenuContent extends React.Component {
-  static contextType = NavigationContext;
+export default class DrawerMenuContent extends React.Component<DrawerMenuProps> {
+  static contextType = AuthContext;
+
+  state = {
+    // TEMPORARY
+    userLoading: true,
+    userFirstName: 'Adele',
+    userFullName: 'Adele Vance',
+    userEmail: 'adelev@contoso.com',
+    userTimeZone: 'UTC',
+    userPhoto: require('../images/no-profile-pic.png')
+  }
+
+  _signOut = async () => {
+    this.context.signOut();
+  }
 
   // <ComponentDidMountSnippet>
   async componentDidMount() {
+    this.props.navigation.setOptions({
+      headerShown: false,
+    });
+
     try {
       // Get the signed-in user from Graph
-      const user = await GraphManager.getUserAsync();
+      const user: MicrosoftGraph.User = await GraphManager.getUserAsync();
 
       // Update UI with display name and email
       this.setState({
-        userName: user.displayName,
+        userLoading: false,
+        userFirstName: user.givenName!,
+        userFullName: user.displayName!,
         // Work/School accounts have email address in mail attribute
         // Personal accounts have it in userPrincipalName
-        userEmail: user.mail !== null ? user.mail : user.userPrincipalName,
+        userEmail: user.mail! || user.userPrincipalName!,
+        userTimeZone: user.mailboxSettings?.timeZone!
       });
     } catch(error) {
       Alert.alert(
@@ -84,50 +107,41 @@ export default class DrawerMenuContent extends React.Component {
   }
   // </ComponentDidMountSnippet>
 
-  state: DrawerMenuState = {
-    // TEMPORARY
-    userName: 'Adele Vance',
-    userEmail: 'adelev@contoso.com',
-    userPhoto: require('../images/no-profile-pic.png')
-  }
-
-  // <SignOutSnippet>
-  _signOut = async () => {
-    const navigation = this.context;
-
-    // Sign out
-    await AuthManager.signOutAsync();
-
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'SignIn' }]
-    });
-  }
-  // </SignOutSnippet>
-
   render() {
-    const navigation = this.context;
-    navigation.setOptions({
-      headerShown: false,
-    });
+    const userLoaded = !this.state.userLoading;
 
     return (
-      <Drawer.Navigator
-        drawerType='front'
-        drawerContent={props => (
-          <CustomDrawerContent {...props}
-            userName={this.state.userName}
-            userEmail={this.state.userEmail}
-            userPhoto={this.state.userPhoto}
-            signOut={this._signOut} />
-        )}>
-        <Drawer.Screen name='Home'
-          component={HomeScreen}
-          options={{drawerLabel: 'Home'}} />
-        <Drawer.Screen name='Calendar'
-          component={CalendarScreen}
-          options={{drawerLabel: 'Calendar'}} />
-      </Drawer.Navigator>
+      <UserContext.Provider value={this.state}>
+        <Drawer.Navigator
+          drawerType='front'
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#276b80'
+            },
+            headerTintColor: 'white'
+          }}
+          drawerContent={props => (
+            <CustomDrawerContent {...props}
+              userName={this.state.userFullName}
+              userEmail={this.state.userEmail}
+              userPhoto={this.state.userPhoto}
+              signOut={this._signOut} />
+          )}>
+          <Drawer.Screen name='Home'
+            component={HomeScreen}
+            options={{drawerLabel: 'Home', headerTitle: 'Welcome'}} />
+          { userLoaded &&
+            <Drawer.Screen name='Calendar'
+              component={CalendarScreen}
+              options={{drawerLabel: 'Calendar'}} />
+          }
+          { userLoaded &&
+            <Drawer.Screen name='NewEvent'
+              component={NewEventScreen}
+              options={{drawerLabel: 'New event'}} />
+          }
+        </Drawer.Navigator>
+      </UserContext.Provider>
     );
   }
 }

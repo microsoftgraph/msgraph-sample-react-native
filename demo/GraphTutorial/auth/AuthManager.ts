@@ -1,8 +1,8 @@
-//  Copyright (c) Microsoft. All rights reserved.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
 // <AuthManagerSnippet>
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authorize, refresh, AuthConfiguration } from 'react-native-app-auth';
 import { Platform } from 'react-native';
 import moment from 'moment';
@@ -49,8 +49,9 @@ export class AuthManager {
 
       if (now.isSameOrAfter(expire)) {
         // Expired, refresh
+        console.log('Refreshing token');
         const refreshToken = await AsyncStorage.getItem('refreshToken');
-
+        console.log(`Refresh token: ${refreshToken}`);
         const result = await refresh(config, { refreshToken: refreshToken || '' });
 
         // Store the new access token, refresh token, and expiration time in storage

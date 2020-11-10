@@ -1,79 +1,45 @@
-//  Copyright (c) Microsoft. All rights reserved.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
+// <HomeScreenSnippet>
 import React from 'react';
 import {
   ActivityIndicator,
-  Alert,
+  Platform,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
-import { GraphManager } from '../graph/GraphManager';
+import { UserContext } from '../UserContext';
 
 const Stack = createStackNavigator();
-const UserState = React.createContext({userLoading: true, userName: ''});
-
-type HomeScreenState = {
-  userLoading: boolean;
-  userName: string;
-}
 
 const HomeComponent = () => {
-  const userState = React.useContext(UserState);
+  const userContext = React.useContext(UserContext);
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator animating={userState.userLoading} size='large' />
-      {userState.userLoading ? null: <Text>Hello {userState.userName}!</Text>}
+      <ActivityIndicator
+        color={Platform.OS === 'android' ? '#276b80' : undefined}
+        animating={userContext.userLoading}
+        size='large' />
+      {userContext.userLoading ? null: <Text>Hello {userContext.userFirstName}!</Text>}
     </View>
   );
 }
 
 export default class HomeScreen extends React.Component {
-
-  // <ComponentDidMountSnippet>
-  async componentDidMount() {
-    try {
-      // Get the signed-in user from Graph
-      const user = await GraphManager.getUserAsync();
-      // Set the user name to the user's given name
-      this.setState({userName: user.givenName, userLoading: false});
-    } catch (error) {
-      Alert.alert(
-        'Error getting user',
-        JSON.stringify(error),
-        [
-          {
-            text: 'OK'
-          }
-        ],
-        { cancelable: false }
-      );
-    }
-    // </ComponentDidMountSnippet>
-  }
-
-  state: HomeScreenState = {
-    userLoading: true,
-    userName: ''
-  };
-
   render() {
     return (
-      <UserState.Provider value={this.state}>
-        <Stack.Navigator screenOptions={headerOptions}>
-          <Stack.Screen name='Home'
-            component={HomeComponent}
-            options={{
-              title: 'Welcome',
-              headerLeft: () => <DrawerToggle/>
-            }} />
-        </Stack.Navigator>
-      </UserState.Provider>
+      <Stack.Navigator>
+        <Stack.Screen name='Home'
+          component={HomeComponent}
+          options={{
+            headerShown: false
+          }} />
+      </Stack.Navigator>
     );
   }
 }
@@ -85,3 +51,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 });
+// </HomeScreenSnippet>

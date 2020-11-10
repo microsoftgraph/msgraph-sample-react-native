@@ -5,7 +5,7 @@ In this exercise you will extend the application from the previous exercise to s
 1. Create a new directory in the **GraphTutorial** directory named **auth**.
 1. Create a new file in the **GraphTutorial/auth** directory named **AuthConfig.ts**. Add the following code to the file.
 
-    :::code language="typescript" source="../demo/GraphTutorial/auth/AuthConfig.ts.example":::
+    :::code language="typescript" source="../demo/GraphTutorial/auth/AuthConfig.example.ts":::
 
     Replace `YOUR_APP_ID_HERE` with the app ID from your app registration.
 
@@ -20,36 +20,15 @@ In this section you will create an authentication helper class, and update the a
 
     :::code language="typescript" source="../demo/GraphTutorial/auth/AuthManager.ts" id="AuthManagerSnippet":::
 
-1. Open the **GraphTutorial/views/SignInScreen.tsx** file and add the following `import` statement to the top of the file.
+1. Open the **GraphTutorial/App.tsx** file and add the following `import` statement to the top of the file.
 
     ```typescript
-    import { AuthManager } from '../auth/AuthManager';
+    import { AuthManager } from './auth/AuthManager';
     ```
 
-1. Replace the existing `_signInAsync` method with the following.
+1. Replace the existing `authContext` declaration with the following.
 
-    :::code language="typescript" source="../demo/GraphTutorial/screens/SignInScreen.tsx" id="SignInAsyncSnippet":::
-
-1. Open the **GraphTutorial/views/HomeScreen.tsx** file and add the following `import` statement to the top of the file.
-
-    ```typescript
-    import { AuthManager } from '../auth/AuthManager';
-    ```
-
-1. Add the following method to the `HomeScreen` class.
-
-    ```typescript
-    async componentDidMount() {
-      try {
-        const accessToken = await AuthManager.getAccessTokenAsync();
-
-        // TEMPORARY
-        this.setState({userName: accessToken, userLoading: false});
-      } catch (error) {
-        alert(error);
-      }
-    }
-    ```
+    :::code language="typescript" source="../demo/GraphTutorial/App.tsx" id="AuthContextSnippet" highlight="4-6,9":::
 
 1. Open the **GraphTutorial/menus/DrawerMenu.tsx** file and add the following `import` statement to the top of the file.
 
@@ -57,9 +36,27 @@ In this section you will create an authentication helper class, and update the a
     import { AuthManager } from '../auth/AuthManager';
     ```
 
-1. Replace the existing `_signOut` method with the following.
+1. Add the following code to the `componentDidMount` function.
 
-    :::code language="typescript" source="../demo/GraphTutorial/menus/DrawerMenu.tsx" id="SignOutSnippet" highlight="5":::
+    ```typescript
+    try {
+      const accessToken = await AuthManager.getAccessTokenAsync();
+
+      // TEMPORARY
+      this.setState({userFirstName: accessToken, userLoading: false});
+    } catch (error) {
+      Alert.alert(
+        'Error getting token',
+        JSON.stringify(error),
+        [
+          {
+            text: 'OK'
+          }
+        ],
+        { cancelable: false }
+      );
+    }
+    ```
 
 1. Save your changes and reload the application in your emulator.
 
@@ -67,7 +64,7 @@ If you sign in to the app, you should see an access token displayed on the **Wel
 
 ## Get user details
 
-In this section you will create a custom authentication provider for the Graph client library, create a helper class to hold all of the calls to Microsoft Graph and update the `HomeScreen` and `DrawerMenuContent` classes to use this new class to get the logged-in user.
+In this section you will create a custom authentication provider for the Graph client library, create a helper class to hold all of the calls to Microsoft Graph and update the `DrawerMenuContent` class to use this new class to get the logged-in user.
 
 1. Create a new directory in the **GraphTutorial** directory named **graph**.
 1. Create a new file in the **GraphTutorial/graph** directory named **GraphAuthProvider.ts**. Add the following code to the file.
@@ -92,20 +89,13 @@ In this section you will create a custom authentication provider for the Graph c
     export class GraphManager {
       static getUserAsync = async() => {
         // GET /me
-        return graphClient.api('/me').get();
+        return await graphClient
+          .api('/me')
+          .select('displayName,givenName,mail,mailboxSettings,userPrincipalName')
+          .get();
       }
     }
     ```
-
-1. Open the **GraphTutorial/views/HomeScreen.tsx** file and add the following `import` statement to the top of the file.
-
-    ```typescript
-    import { GraphManager } from '../graph/GraphManager';
-    ```
-
-1. Replace the `componentDidMount` method with the following.
-
-    :::code language="typescript" source="../demo/GraphTutorial/screens/HomeScreen.tsx" id="ComponentDidMountSnippet" highlight="3-6,9":::
 
 1. Open the **GraphTutorial/views/DrawerMenu.tsx** file and add the following `import` statement to the top of the file.
 
@@ -113,7 +103,7 @@ In this section you will create a custom authentication provider for the Graph c
     import { GraphManager } from '../graph/GraphManager';
     ```
 
-1. Add the following `componentDidMount` method to the `DrawerMenuContent` class.
+1. Replace the `componentDidMount` method with the following.
 
     :::code language="typescript" source="../demo/GraphTutorial/menus/DrawerMenu.tsx" id="ComponentDidMountSnippet":::
 
