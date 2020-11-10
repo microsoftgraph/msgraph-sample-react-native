@@ -22,4 +22,4 @@ export const UserContext = React.createContext<UserContextType>({
   userTimeZone: '',
   userPhoto: require('./images/no-profile-pic.png')
 });
-// <UserContextSnippet>
+// </UserContextSnippet>

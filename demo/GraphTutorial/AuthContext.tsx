@@ -13,4 +13,4 @@ export const AuthContext = React.createContext<AuthContextType>({
   signIn: async () => {},
   signOut: () => {}
 });
-// <AuthContextSnippet>
+// </AuthContextSnippet>
