@@ -64,7 +64,7 @@ If you sign in to the app, you should see an access token displayed on the **Wel
 
 ## Get user details
 
-In this section you will create a custom authentication provider for the Graph client library, create a helper class to hold all of the calls to Microsoft Graph and update the `HomeScreen` and `DrawerMenuContent` classes to use this new class to get the logged-in user.
+In this section you will create a custom authentication provider for the Graph client library, create a helper class to hold all of the calls to Microsoft Graph and update the `DrawerMenuContent` class to use this new class to get the logged-in user.
 
 1. Create a new directory in the **GraphTutorial** directory named **graph**.
 1. Create a new file in the **GraphTutorial/graph** directory named **GraphAuthProvider.ts**. Add the following code to the file.

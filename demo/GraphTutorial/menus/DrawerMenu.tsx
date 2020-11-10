@@ -1,5 +1,5 @@
-//  Copyright (c) Microsoft.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
 import React, { FC } from 'react';
 import {
@@ -25,6 +25,7 @@ import { AuthContext } from '../AuthContext';
 import { UserContext } from '../UserContext';
 import HomeScreen from '../screens/HomeScreen';
 import CalendarScreen from '../screens/CalendarScreen';
+import NewEventScreen from '../screens/NewEventScreen';
 import { GraphManager } from '../graph/GraphManager';
 
 const Drawer = createDrawerNavigator();
@@ -127,6 +128,11 @@ export default class DrawerMenuContent extends React.Component<DrawerMenuProps> 
             <Drawer.Screen name='Calendar'
               component={CalendarScreen}
               options={{drawerLabel: 'Calendar'}} />
+          }
+          { userLoaded &&
+            <Drawer.Screen name='NewEvent'
+              component={NewEventScreen}
+              options={{drawerLabel: 'New event'}} />
           }
         </Drawer.Navigator>
       </UserContext.Provider>

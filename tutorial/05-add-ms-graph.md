@@ -29,6 +29,7 @@ In this section you will extend the `GraphManager` class to add a function to ge
       Alert,
       FlatList,
       Modal,
+      Platform,
       ScrollView,
       StyleSheet,
       Text,
@@ -55,14 +56,17 @@ In this section you will extend the `GraphManager` class to add a function to ge
     }
 
     // Temporary JSON view
-    const CalendarComponent = ({navigation}: any) => {
+    const CalendarComponent = () => {
       const calendarState = React.useContext(CalendarState);
 
       return (
         <View style={styles.container}>
           <Modal visible={calendarState.loadingEvents}>
             <View style={styles.loading}>
-              <ActivityIndicator animating={calendarState.loadingEvents} size='large' />
+              <ActivityIndicator
+                color={Platform.OS === 'android' ? '#276b80' : undefined}
+                animating={calendarState.loadingEvents}
+                size='large' />
             </View>
           </Modal>
           <ScrollView>
@@ -82,8 +86,6 @@ In this section you will extend the `GraphManager` class to add a function to ge
 
       async componentDidMount() {
         try {
-          console.log(`Time zone: ${this.context.userTimeZone}`);
-
           const tz = this.context.userTimeZone || 'UTC';
           // Convert user's Windows time zone ("Pacific Standard Time")
           // to IANA format ("America/Los_Angeles")
@@ -100,9 +102,6 @@ In this section you will extend the `GraphManager` class to add a function to ge
 
           const endOfWeek = moment(startOfWeek)
             .add(7, 'day');
-
-          console.log(`Start: ${startOfWeek.format()}`);
-          console.log(`End: ${endOfWeek.format()}`);
 
           const events = await GraphManager.getCalendarView(
             startOfWeek.format(),

@@ -1,5 +1,5 @@
-//  Copyright (c) Microsoft.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
 import { Client } from '@microsoft/microsoft-graph-client';
 import { GraphAuthProvider } from './GraphAuthProvider';
@@ -38,4 +38,12 @@ export class GraphManager {
       .get();
   }
   // </GetCalendarViewSnippet>
+
+  // <CreateEventSnippet>
+  static createEvent = async(newEvent: any) => {
+    // POST /me/events
+    await graphClient.api('/me/events')
+      .post(newEvent);
+  }
+  // </CreateEventSnippet>
 }

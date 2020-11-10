@@ -22,6 +22,7 @@ Before moving on, install some additional dependencies that you will use later.
 - [react-native-elements](https://reactnativeelements.com/docs/) and [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) to provide icons for the UI.
 - [react-native-app-auth](https://github.com/FormidableLabs/react-native-app-auth) to handle authentication and token management.
 - [async-storage](https://react-native-async-storage.github.io/async-storage/docs/install) to provide storage for tokens.
+- [datetimepicker](https://github.com/react-native-datetimepicker/datetimepicker) to add date and time pickers to the UI.
 - [moment](https://momentjs.com) to handle parsing and comparison of dates and times.
 - [windows-iana](https://github.com/rubenillodo/windows-iana) for translating Windows time zones to IANA format.
 - [microsoft-graph-client](https://github.com/microsoftgraph/msgraph-sdk-javascript) for making calls to the Microsoft Graph.
@@ -35,6 +36,7 @@ Before moving on, install some additional dependencies that you will use later.
     npm install react-native-reanimated@1.13.1 react-native-screens@2.12.0 @react-native-async-storage/async-storage@1.13.1
     npm install react-native-elements@2.3.2 react-native-vector-icons@7.1.0 react-native-gesture-handler@1.8.0
     npm install react-native-app-auth@6.0.0 moment@2.29.1 moment-timezone @microsoft/microsoft-graph-client@2.1.0
+    npm install @react-native-community/datetimepicker@3.0.4
     npm install @microsoft/microsoft-graph-types --save-dev
     ```
 
