@@ -18,7 +18,6 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import moment from 'moment-timezone';
 import { findOneIana } from 'windows-iana';
 
-import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
 import { UserContext } from '../UserContext';
 import { GraphManager } from '../graph/GraphManager';
 
@@ -120,12 +119,11 @@ export default class CalendarScreen extends React.Component {
   render() {
     return (
       <CalendarState.Provider value={this.state}>
-        <Stack.Navigator screenOptions={ headerOptions }>
+        <Stack.Navigator>
           <Stack.Screen name='Calendar'
             component={ CalendarComponent }
             options={{
-              title: 'Calendar',
-              headerLeft: () => <DrawerToggle/>
+              headerShown: false
             }} />
 
         </Stack.Navigator>

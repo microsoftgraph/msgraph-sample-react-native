@@ -40,7 +40,6 @@ In this section you will extend the `GraphManager` class to add a function to ge
     import moment from 'moment-timezone';
     import { findOneIana } from 'windows-iana';
 
-    import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
     import { UserContext } from '../UserContext';
     import { GraphManager } from '../graph/GraphManager';
 
@@ -130,12 +129,11 @@ In this section you will extend the `GraphManager` class to add a function to ge
       render() {
         return (
           <CalendarState.Provider value={this.state}>
-            <Stack.Navigator screenOptions={ headerOptions }>
+            <Stack.Navigator>
               <Stack.Screen name='Calendar'
                 component={ CalendarComponent }
                 options={{
-                  title: 'Calendar',
-                  headerLeft: () => <DrawerToggle/>
+                  headerShown: false
                 }} />
             </Stack.Navigator>
           </CalendarState.Provider>

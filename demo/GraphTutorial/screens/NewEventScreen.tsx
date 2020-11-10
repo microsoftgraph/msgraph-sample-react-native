@@ -19,7 +19,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import moment from 'moment-timezone';
 
-import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
 import { UserContext } from '../UserContext';
 import { GraphManager } from '../graph/GraphManager';
 import { TextInput } from 'react-native-gesture-handler';
@@ -272,12 +271,11 @@ export default class NewEventScreen extends React.Component {
   render() {
     return (
       <NewEventState.Provider value={this.state}>
-        <Stack.Navigator screenOptions={ headerOptions }>
+        <Stack.Navigator>
           <Stack.Screen name='NewEvent'
             component={ NewEventComponent }
             options={{
-              title: 'New event',
-              headerLeft: () => <DrawerToggle/>
+              headerShown: false
             }} />
         </Stack.Navigator>
       </NewEventState.Provider>

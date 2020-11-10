@@ -31,11 +31,11 @@ Before moving on, install some additional dependencies that you will use later.
 1. Run the following command.
 
     ```Shell
-    npm install @react-navigation/native@5.8.1 @react-navigation/drawer@5.10.1 @react-navigation/stack@5.11.0
+    npm install @react-navigation/native@5.8.8 @react-navigation/drawer@5.11.1 @react-navigation/stack@5.12.5
     npm install @react-native-community/masked-view@0.1.10 react-native-safe-area-context@3.1.8 windows-iana
-    npm install react-native-reanimated@1.13.1 react-native-screens@2.12.0 @react-native-async-storage/async-storage@1.13.1
+    npm install react-native-reanimated@1.13.1 react-native-screens@2.14.0 @react-native-async-storage/async-storage@1.13.2
     npm install react-native-elements@2.3.2 react-native-vector-icons@7.1.0 react-native-gesture-handler@1.8.0
-    npm install react-native-app-auth@6.0.0 moment@2.29.1 moment-timezone @microsoft/microsoft-graph-client@2.1.0
+    npm install react-native-app-auth@6.0.1 moment@2.29.1 moment-timezone @microsoft/microsoft-graph-client@2.1.1
     npm install @react-native-community/datetimepicker@3.0.4
     npm install @microsoft/microsoft-graph-types --save-dev
     ```
@@ -142,7 +142,6 @@ In this section you will create the views for the app to support an [authenticat
       View,
     } from 'react-native';
     import { createStackNavigator } from '@react-navigation/stack';
-    import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
 
     const Stack = createStackNavigator();
 
@@ -157,12 +156,11 @@ In this section you will create the views for the app to support an [authenticat
 
       render() {
         return (
-          <Stack.Navigator screenOptions={ headerOptions }>
+          <Stack.Navigator>
             <Stack.Screen name='Calendar'
               component={ CalendarComponent }
               options={{
-                title: 'Calendar',
-                headerLeft: () => <DrawerToggle/>
+                headerShown: false
               }} />
           </Stack.Navigator>
         );
@@ -239,9 +237,6 @@ In this section you will create the views for the app to support an [authenticat
 In this section you will create a menu for the application, and update the application to use react-navigation to move between screens.
 
 1. Create a new directory in the **GraphTutorial** directory named **menus**.
-1. Create a new file in the **GraphTutorial/menus** directory named **HeaderComponents.tsx**. Add the following code to the file.
-
-    :::code language="typescript" source="../demo/GraphTutorial/menus/HeaderComponents.tsx" id="HeaderComponentSnippet":::
 
 1. Create a new file in the **GraphTutorial/menus** directory named **DrawerMenu.tsx**. Add the following code to the file.
 
@@ -327,6 +322,12 @@ In this section you will create a menu for the application, and update the appli
           <UserContext.Provider value={this.state}>
             <Drawer.Navigator
               drawerType='front'
+              screenOptions={{
+                headerStyle: {
+                  backgroundColor: '#276b80'
+                },
+                headerTintColor: 'white'
+              }}
               drawerContent={props => (
                 <CustomDrawerContent {...props}
                   userName={this.state.userFullName}
@@ -336,7 +337,7 @@ In this section you will create a menu for the application, and update the appli
               )}>
               <Drawer.Screen name='Home'
                 component={HomeScreen}
-                options={{drawerLabel: 'Home'}} />
+                options={{drawerLabel: 'Home', headerTitle: 'Welcome'}} />
               { userLoaded &&
                 <Drawer.Screen name='Calendar'
                   component={CalendarScreen}

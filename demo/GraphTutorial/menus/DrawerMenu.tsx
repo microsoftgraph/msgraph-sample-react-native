@@ -114,6 +114,12 @@ export default class DrawerMenuContent extends React.Component<DrawerMenuProps> 
       <UserContext.Provider value={this.state}>
         <Drawer.Navigator
           drawerType='front'
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: '#276b80'
+            },
+            headerTintColor: 'white'
+          }}
           drawerContent={props => (
             <CustomDrawerContent {...props}
               userName={this.state.userFullName}
@@ -123,7 +129,7 @@ export default class DrawerMenuContent extends React.Component<DrawerMenuProps> 
           )}>
           <Drawer.Screen name='Home'
             component={HomeScreen}
-            options={{drawerLabel: 'Home'}} />
+            options={{drawerLabel: 'Home', headerTitle: 'Welcome'}} />
           { userLoaded &&
             <Drawer.Screen name='Calendar'
               component={CalendarScreen}

@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { DrawerToggle, headerOptions } from '../menus/HeaderComponents';
 import { UserContext } from '../UserContext';
 
 const Stack = createStackNavigator();
@@ -34,12 +33,13 @@ const HomeComponent = () => {
 export default class HomeScreen extends React.Component {
   render() {
     return (
-      <Stack.Navigator screenOptions={headerOptions}>
+      <Stack.Navigator>
         <Stack.Screen name='Home'
           component={HomeComponent}
           options={{
-            title: 'Welcome',
-            headerLeft: () => <DrawerToggle/>
+            headerShown: false,
+            //title: 'Welcome',
+            //headerLeft: () => <DrawerToggle/>
           }} />
       </Stack.Navigator>
     );
