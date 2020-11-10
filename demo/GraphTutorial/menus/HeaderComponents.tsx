@@ -1,5 +1,5 @@
-//  Copyright (c) Microsoft.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
 // <HeaderComponentSnippet>
 // This component provides the hamburger menu icon shared by

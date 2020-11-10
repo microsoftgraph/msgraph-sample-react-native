@@ -1,5 +1,5 @@
-//  Copyright (c) Microsoft.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
 // Adapted from https://reactnavigation.org/docs/auth-flow
 import * as React from 'react';

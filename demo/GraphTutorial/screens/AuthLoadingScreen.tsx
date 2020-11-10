@@ -1,11 +1,12 @@
-//  Copyright (c) Microsoft.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
 // <AuthLoadingScreenSnippet>
 // Adapted from https://reactnavigation.org/docs/auth-flow
 import React from 'react';
 import {
   ActivityIndicator,
+  Platform,
   Text,
   StyleSheet,
   View,
@@ -15,7 +16,9 @@ export default class AuthLoadingScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size='large' />
+        <ActivityIndicator
+          color={Platform.OS === 'android' ? '#276b80' : undefined}
+          size='large' />
         <Text style={styles.statusText}>Logging in...</Text>
       </View>
     );

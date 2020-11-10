@@ -1,13 +1,13 @@
-//  Copyright (c) Microsoft.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
 import React from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Button,
   FlatList,
   Modal,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -33,14 +33,17 @@ type CalendarScreenState = {
   events: MicrosoftGraph.Event[];
 }
 
-const CalendarComponent = ({navigation}: any) => {
+const CalendarComponent = () => {
   const calendarState = React.useContext(CalendarState);
 
   return (
     <View style={styles.container}>
       <Modal visible={calendarState.loadingEvents}>
         <View style={styles.loading}>
-          <ActivityIndicator animating={calendarState.loadingEvents} size='large' />
+          <ActivityIndicator
+            color={Platform.OS === 'android' ? '#276b80' : undefined}
+            animating={calendarState.loadingEvents}
+            size='large' />
         </View>
       </Modal>
       <FlatList data={calendarState.events}
@@ -73,8 +76,6 @@ export default class CalendarScreen extends React.Component {
 
   async componentDidMount() {
     try {
-      console.log(`Time zone: ${this.context.userTimeZone}`);
-
       const tz = this.context.userTimeZone || 'UTC';
       // Convert user's Windows time zone ("Pacific Standard Time")
       // to IANA format ("America/Los_Angeles")
@@ -91,9 +92,6 @@ export default class CalendarScreen extends React.Component {
 
       const endOfWeek = moment(startOfWeek)
         .add(7, 'day');
-
-      console.log(`Start: ${startOfWeek.format()}`);
-      console.log(`End: ${endOfWeek.format()}`);
 
       const events = await GraphManager.getCalendarView(
         startOfWeek.format(),

@@ -1,5 +1,5 @@
-//  Copyright (c) Microsoft.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
 // <AuthContextSnippet>
 import * as React from 'react';

@@ -1,5 +1,5 @@
-//  Copyright (c) Microsoft.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
 // <AuthManagerSnippet>
 import AsyncStorage from '@react-native-async-storage/async-storage';

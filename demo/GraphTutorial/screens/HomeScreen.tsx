@@ -1,10 +1,11 @@
-//  Copyright (c) Microsoft.
-//  Licensed under the MIT license.
+// Copyright (c) Microsoft.
+// Licensed under the MIT license.
 
 // <HomeScreenSnippet>
 import React from 'react';
 import {
   ActivityIndicator,
+  Platform,
   StyleSheet,
   Text,
   View,
@@ -21,7 +22,10 @@ const HomeComponent = () => {
 
   return (
     <View style={styles.container}>
-      <ActivityIndicator animating={userContext.userLoading} size='large' />
+      <ActivityIndicator
+        color={Platform.OS === 'android' ? '#276b80' : undefined}
+        animating={userContext.userLoading}
+        size='large' />
       {userContext.userLoading ? null: <Text>Hello {userContext.userFirstName}!</Text>}
     </View>
   );
