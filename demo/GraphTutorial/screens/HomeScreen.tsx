@@ -37,9 +37,7 @@ export default class HomeScreen extends React.Component {
         <Stack.Screen name='Home'
           component={HomeComponent}
           options={{
-            headerShown: false,
-            //title: 'Welcome',
-            //headerLeft: () => <DrawerToggle/>
+            headerShown: false
           }} />
       </Stack.Navigator>
     );
