@@ -11,7 +11,7 @@ import { AuthConfig } from './AuthConfig';
 
 const config: AuthConfiguration = {
   clientId: AuthConfig.appId,
-  redirectUrl: Platform.OS === 'ios' ? 'urn:ietf:wg:oauth:2.0:oob' : 'graph-tutorial://react-native-auth',
+  redirectUrl: 'graph-tutorial://react-native-auth/',
   scopes: AuthConfig.appScopes,
   additionalParameters: { prompt: 'select_account' },
   serviceConfiguration: {
@@ -24,6 +24,8 @@ export class AuthManager {
 
   static signInAsync = async () => {
     const result = await authorize(config);
+
+    console.log(result.accessToken);
 
     // Store the access token, refresh token, and expiration time in storage
     await AsyncStorage.setItem('userToken', result.accessToken);
