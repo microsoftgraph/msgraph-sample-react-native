@@ -12,7 +12,7 @@ In this exercise you will create a new Azure AD native application using the Azu
 
     - Set **Name** to `React Native Graph Tutorial`.
     - Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
-    - Under **Redirect URI**, change the dropdown to **Public client (mobile & desktop)**, and set the value to `graph-tutorial://react-native-auth`.
+    - Under **Redirect URI**, change the dropdown to **Public client (mobile & desktop)**, and set the value to `graph-tutorial://react-native-auth/`.
 
     ![A screenshot of the Register an application page](./images/aad-register-an-app.png)
 
