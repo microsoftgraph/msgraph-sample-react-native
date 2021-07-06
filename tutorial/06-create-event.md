@@ -25,11 +25,13 @@ In this section you will add the ability to create events on the user's calendar
 1. Add the following code inside the `<Drawer.Navigator>` element, just above the `</Drawer.Navigator>` line.
 
     ```typescript
-    { userLoaded &&
-      <Drawer.Screen name='NewEvent'
+    {userLoaded && (
+      <Drawer.Screen
+        name='NewEvent'
         component={NewEventScreen}
-        options={{drawerLabel: 'New event'}} />
-    }
+        options={{drawerLabel: 'New event'}}
+      />
+    )}
     ```
 
 1. Save your changes and restart or refresh the app. Select the **New event** option on the menu to get to the new event form.

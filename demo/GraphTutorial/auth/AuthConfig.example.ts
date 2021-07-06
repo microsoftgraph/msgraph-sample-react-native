@@ -6,6 +6,6 @@ export const AuthConfig = {
     'profile',
     'User.Read',
     'MailboxSettings.Read',
-    'Calendars.ReadWrite'
-  ]
+    'Calendars.ReadWrite',
+  ],
 };

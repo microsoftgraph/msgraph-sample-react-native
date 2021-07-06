@@ -35,24 +35,24 @@ In this section you will extend the `GraphManager` class to add a function to ge
       Text,
       View,
     } from 'react-native';
-    import { createStackNavigator } from '@react-navigation/stack';
+    import {createStackNavigator} from '@react-navigation/stack';
     import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
     import moment from 'moment-timezone';
-    import { findOneIana } from 'windows-iana';
+    import {findIana} from 'windows-iana';
 
-    import { UserContext } from '../UserContext';
-    import { GraphManager } from '../graph/GraphManager';
+    import {UserContext} from '../UserContext';
+    import {GraphManager} from '../graph/GraphManager';
 
     const Stack = createStackNavigator();
     const CalendarState = React.createContext<CalendarScreenState>({
       loadingEvents: true,
-      events: []
+      events: [],
     });
 
     type CalendarScreenState = {
       loadingEvents: boolean;
       events: MicrosoftGraph.Event[];
-    }
+    };
 
     // Temporary JSON view
     const CalendarComponent = () => {
@@ -65,7 +65,8 @@ In this section you will extend the `GraphManager` class to add a function to ge
               <ActivityIndicator
                 color={Platform.OS === 'android' ? '#276b80' : undefined}
                 animating={calendarState.loadingEvents}
-                size='large' />
+                size='large'
+              />
             </View>
           </Modal>
           <ScrollView>
@@ -73,14 +74,14 @@ In this section you will extend the `GraphManager` class to add a function to ge
           </ScrollView>
         </View>
       );
-    }
+    };
 
     export default class CalendarScreen extends React.Component {
       static contextType = UserContext;
 
       state: CalendarScreenState = {
         loadingEvents: true,
-        events: []
+        events: [],
       };
 
       async componentDidMount() {
@@ -89,7 +90,7 @@ In this section you will extend the `GraphManager` class to add a function to ge
           // Convert user's Windows time zone ("Pacific Standard Time")
           // to IANA format ("America/Los_Angeles")
           // Moment.js needs IANA format
-          const ianaTimeZone = findOneIana(tz);
+          const ianaTimeZone = findIana(tz)[0];
 
           // Get midnight on the start of the current week in the user's
           // time zone, but in UTC. For example, for PST, the time value
@@ -99,30 +100,29 @@ In this section you will extend the `GraphManager` class to add a function to ge
             .startOf('week')
             .utc();
 
-          const endOfWeek = moment(startOfWeek)
-            .add(7, 'day');
+          const endOfWeek = moment(startOfWeek).add(7, 'day');
 
           const events = await GraphManager.getCalendarView(
             startOfWeek.format(),
             endOfWeek.format(),
-            tz);
+            tz,
+          );
 
           this.setState({
             loadingEvents: false,
-            events: events.value
+            events: events.value,
           });
-        } catch(error) {
+        } catch (error) {
           Alert.alert(
             'Error getting events',
             JSON.stringify(error),
             [
               {
-                text: 'OK'
-              }
+                text: 'OK',
+              },
             ],
-            { cancelable: false }
+            {cancelable: false},
           );
-
         }
       }
 
@@ -130,11 +130,13 @@ In this section you will extend the `GraphManager` class to add a function to ge
         return (
           <CalendarState.Provider value={this.state}>
             <Stack.Navigator>
-              <Stack.Screen name='Calendar'
-                component={ CalendarComponent }
+              <Stack.Screen
+                name='Calendar'
+                component={CalendarComponent}
                 options={{
-                  headerShown: false
-                }} />
+                  headerShown: false,
+                }}
+              />
             </Stack.Navigator>
           </CalendarState.Provider>
         );
@@ -143,26 +145,26 @@ In this section you will extend the `GraphManager` class to add a function to ge
 
     const styles = StyleSheet.create({
       container: {
-        flex: 1
+        flex: 1,
       },
       loading: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
       },
       eventItem: {
-        padding: 10
+        padding: 10,
       },
       eventSubject: {
         fontWeight: '700',
-        fontSize: 18
+        fontSize: 18,
       },
       eventOrganizer: {
-        fontWeight: '200'
+        fontWeight: '200',
       },
       eventDuration: {
-        fontWeight: '200'
-      }
+        fontWeight: '200',
+      },
     });
     ```
 
@@ -179,16 +181,21 @@ Now you can replace the JSON dump with something to display the results in a use
 1. Replace the `ScrollView` in the `CalendarComponent` method with the following.
 
     ```typescript
-    <FlatList data={calendarState.events}
-      renderItem={({item}) =>
+    <FlatList
+      data={calendarState.events}
+      renderItem={({item}) => (
         <View style={styles.eventItem}>
           <Text style={styles.eventSubject}>{item.subject}</Text>
-          <Text style={styles.eventOrganizer}>{item.organizer.emailAddress.name}</Text>
+          <Text style={styles.eventOrganizer}>
+            {item.organizer!.emailAddress!.name}
+          </Text>
           <Text style={styles.eventDuration}>
-            {convertDateTime(item.start.dateTime)} - {convertDateTime(item.end.dateTime)}
+            {convertDateTime(item.start!.dateTime!)} -{' '}
+            {convertDateTime(item.end!.dateTime!)}
           </Text>
         </View>
-      } />
+      )}
+    />
     ```
 
 1. Run the app, sign in, and tap the **Calendar** navigation item. You should see the list of events.

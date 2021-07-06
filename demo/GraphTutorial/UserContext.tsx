@@ -3,7 +3,7 @@
 
 // <UserContextSnippet>
 import * as React from 'react';
-import { ImageSourcePropType } from 'react-native';
+import {ImageSourcePropType} from 'react-native';
 
 type UserContextType = {
   userLoading: boolean;
@@ -12,7 +12,7 @@ type UserContextType = {
   userEmail: string;
   userTimeZone: string;
   userPhoto: ImageSourcePropType;
-}
+};
 
 export const UserContext = React.createContext<UserContextType>({
   userLoading: true,
@@ -20,6 +20,6 @@ export const UserContext = React.createContext<UserContextType>({
   userFullName: '',
   userEmail: '',
   userTimeZone: '',
-  userPhoto: require('./images/no-profile-pic.png')
+  userPhoto: require('./images/no-profile-pic.png'),
 });
 // </UserContextSnippet>

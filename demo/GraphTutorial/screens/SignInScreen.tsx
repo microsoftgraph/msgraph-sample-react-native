@@ -3,16 +3,11 @@
 
 // Adapted from https://reactnavigation.org/docs/auth-flow
 import React from 'react';
-import {
-  Alert,
-  Button,
-  StyleSheet,
-  View,
-} from 'react-native';
-import { ParamListBase } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack'
+import {Alert, Button, StyleSheet, View} from 'react-native';
+import {ParamListBase} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 
-import { AuthContext } from '../AuthContext';
+import {AuthContext} from '../AuthContext';
 
 type SignInProps = {
   navigation: StackNavigationProp<ParamListBase>;
@@ -28,14 +23,14 @@ export default class SignInScreen extends React.Component<SignInProps> {
   componentDidMount() {
     this.props.navigation.setOptions({
       title: 'Please sign in',
-      headerShown: true
+      headerShown: true,
     });
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Button title='Sign In' onPress={this._signInAsync}/>
+        <Button title='Sign In' onPress={this._signInAsync} />
       </View>
     );
   }
@@ -45,6 +40,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
-  }
+    justifyContent: 'center',
+  },
 });

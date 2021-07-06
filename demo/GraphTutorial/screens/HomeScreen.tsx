@@ -10,9 +10,9 @@ import {
   Text,
   View,
 } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 
-import { UserContext } from '../UserContext';
+import {UserContext} from '../UserContext';
 
 const Stack = createStackNavigator();
 
@@ -24,21 +24,26 @@ const HomeComponent = () => {
       <ActivityIndicator
         color={Platform.OS === 'android' ? '#276b80' : undefined}
         animating={userContext.userLoading}
-        size='large' />
-      {userContext.userLoading ? null: <Text>Hello {userContext.userFirstName}!</Text>}
+        size='large'
+      />
+      {userContext.userLoading ? null : (
+        <Text>Hello {userContext.userFirstName}!</Text>
+      )}
     </View>
   );
-}
+};
 
 export default class HomeScreen extends React.Component {
   render() {
     return (
       <Stack.Navigator>
-        <Stack.Screen name='Home'
+        <Stack.Screen
+          name='Home'
           component={HomeComponent}
           options={{
-            headerShown: false
-          }} />
+            headerShown: false,
+          }}
+        />
       </Stack.Navigator>
     );
   }
@@ -48,7 +53,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
-  }
+    justifyContent: 'center',
+  },
 });
 // </HomeScreenSnippet>

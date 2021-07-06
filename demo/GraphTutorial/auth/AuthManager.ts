@@ -3,25 +3,24 @@
 
 // <AuthManagerSnippet>
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { authorize, refresh, AuthConfiguration } from 'react-native-app-auth';
-import { Platform } from 'react-native';
+import {authorize, refresh, AuthConfiguration} from 'react-native-app-auth';
 import moment from 'moment';
 
-import { AuthConfig } from './AuthConfig';
+import {AuthConfig} from './AuthConfig';
 
 const config: AuthConfiguration = {
   clientId: AuthConfig.appId,
   redirectUrl: 'graph-tutorial://react-native-auth/',
   scopes: AuthConfig.appScopes,
-  additionalParameters: { prompt: 'select_account' },
+  additionalParameters: {prompt: 'select_account'},
   serviceConfiguration: {
-    authorizationEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+    authorizationEndpoint:
+      'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
     tokenEndpoint: 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
-  }
+  },
 };
 
 export class AuthManager {
-
   static signInAsync = async () => {
     const result = await authorize(config);
 
@@ -31,16 +30,16 @@ export class AuthManager {
     await AsyncStorage.setItem('userToken', result.accessToken);
     await AsyncStorage.setItem('refreshToken', result.refreshToken);
     await AsyncStorage.setItem('expireTime', result.accessTokenExpirationDate);
-  }
+  };
 
   static signOutAsync = async () => {
     // Clear storage
     await AsyncStorage.removeItem('userToken');
     await AsyncStorage.removeItem('refreshToken');
     await AsyncStorage.removeItem('expireTime');
-  }
+  };
 
-  static getAccessTokenAsync = async() => {
+  static getAccessTokenAsync = async () => {
     const expireTime = await AsyncStorage.getItem('expireTime');
 
     if (expireTime !== null) {
@@ -54,12 +53,17 @@ export class AuthManager {
         console.log('Refreshing token');
         const refreshToken = await AsyncStorage.getItem('refreshToken');
         console.log(`Refresh token: ${refreshToken}`);
-        const result = await refresh(config, { refreshToken: refreshToken || '' });
+        const result = await refresh(config, {
+          refreshToken: refreshToken || '',
+        });
 
         // Store the new access token, refresh token, and expiration time in storage
         await AsyncStorage.setItem('userToken', result.accessToken);
         await AsyncStorage.setItem('refreshToken', result.refreshToken || '');
-        await AsyncStorage.setItem('expireTime', result.accessTokenExpirationDate);
+        await AsyncStorage.setItem(
+          'expireTime',
+          result.accessTokenExpirationDate,
+        );
 
         return result.accessToken;
       }
@@ -70,6 +74,6 @@ export class AuthManager {
     }
 
     return null;
-  }
+  };
 }
 // </AuthManagerSnippet>

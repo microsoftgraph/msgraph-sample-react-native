@@ -31,12 +31,12 @@ Before moving on, install some additional dependencies that you will use later.
 1. Run the following command.
 
     ```Shell
-    npm install @react-navigation/native@5.8.8 @react-navigation/drawer@5.11.1 @react-navigation/stack@5.12.5
-    npm install @react-native-community/masked-view@0.1.10 react-native-safe-area-context@3.1.8 windows-iana
-    npm install react-native-reanimated@1.13.1 react-native-screens@2.14.0 @react-native-async-storage/async-storage@1.13.2
-    npm install react-native-elements@2.3.2 react-native-vector-icons@7.1.0 react-native-gesture-handler@1.8.0
-    npm install react-native-app-auth@6.0.1 moment@2.29.1 moment-timezone @microsoft/microsoft-graph-client@2.1.1
-    npm install @react-native-community/datetimepicker@3.0.4
+    npm install @react-navigation/native@5.9.4 @react-navigation/drawer@5.12.5 @react-navigation/stack@5.14.5
+    npm install @react-native-community/masked-view@0.1.11 react-native-safe-area-context@3.2.0 windows-iana
+    npm install react-native-reanimated@2.2.0 react-native-screens@3.4.0 @react-native-async-storage/async-storage@1.15.5
+    npm install react-native-elements@3.4.2 react-native-vector-icons@8.1.0 react-native-gesture-handler@1.10.3
+    npm install react-native-app-auth@6.4.0 moment@2.29.1 moment-timezone @microsoft/microsoft-graph-client@3.0.0-Preview.2
+    npm install @react-native-community/datetimepicker@3.5.2
     npm install @microsoft/microsoft-graph-types --save-dev
     ```
 
@@ -136,12 +136,8 @@ In this section you will create the views for the app to support an [authenticat
 
     ```typescript
     import React from 'react';
-    import {
-      Text,
-      StyleSheet,
-      View,
-    } from 'react-native';
-    import { createStackNavigator } from '@react-navigation/stack';
+    import {StyleSheet, Text, View} from 'react-native';
+    import {createStackNavigator} from '@react-navigation/stack';
 
     const Stack = createStackNavigator();
 
@@ -153,15 +149,16 @@ In this section you will create the views for the app to support an [authenticat
     );
 
     export default class CalendarScreen extends React.Component {
-
       render() {
         return (
           <Stack.Navigator>
-            <Stack.Screen name='Calendar'
-              component={ CalendarComponent }
+            <Stack.Screen
+              name='Calendar'
+              component={CalendarComponent}
               options={{
-                headerShown: false
-              }} />
+                headerShown: false,
+              }}
+            />
           </Stack.Navigator>
         );
       }
@@ -171,8 +168,8 @@ In this section you will create the views for the app to support an [authenticat
       container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
-      }
+        justifyContent: 'center',
+      },
     });
     ```
 
@@ -181,16 +178,11 @@ In this section you will create the views for the app to support an [authenticat
     ```typescript
     // Adapted from https://reactnavigation.org/docs/auth-flow
     import React from 'react';
-    import {
-      Alert,
-      Button,
-      StyleSheet,
-      View,
-    } from 'react-native';
-    import { ParamListBase } from '@react-navigation/native';
-    import { StackNavigationProp } from '@react-navigation/stack'
+    import {Alert, Button, StyleSheet, View} from 'react-native';
+    import {ParamListBase} from '@react-navigation/native';
+    import {StackNavigationProp} from '@react-navigation/stack';
 
-    import { AuthContext } from '../AuthContext';
+    import {AuthContext} from '../AuthContext';
 
     type SignInProps = {
       navigation: StackNavigationProp<ParamListBase>;
@@ -206,14 +198,14 @@ In this section you will create the views for the app to support an [authenticat
       componentDidMount() {
         this.props.navigation.setOptions({
           title: 'Please sign in',
-          headerShown: true
+          headerShown: true,
         });
       }
 
       render() {
         return (
           <View style={styles.container}>
-            <Button title='Sign In' onPress={this._signInAsync}/>
+            <Button title='Sign In' onPress={this._signInAsync} />
           </View>
         );
       }
@@ -223,8 +215,8 @@ In this section you will create the views for the app to support an [authenticat
       container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
-      }
+        justifyContent: 'center',
+      },
     });
     ```
 
@@ -241,27 +233,27 @@ In this section you will create a menu for the application, and update the appli
 1. Create a new file in the **GraphTutorial/menus** directory named **DrawerMenu.tsx**. Add the following code to the file.
 
     ```typescript
-    import React, { FC } from 'react';
+    import React, {FC} from 'react';
     import {
       Alert,
       Image,
       StyleSheet,
       Text,
       View,
-      ImageSourcePropType
+      ImageSourcePropType,
     } from 'react-native';
     import {
       createDrawerNavigator,
       DrawerContentScrollView,
       DrawerItem,
       DrawerItemList,
-      DrawerContentComponentProps
+      DrawerContentComponentProps,
     } from '@react-navigation/drawer';
-    import { ParamListBase } from '@react-navigation/native';
-    import { StackNavigationProp } from '@react-navigation/stack'
+    import {ParamListBase} from '@react-navigation/native';
+    import {StackNavigationProp} from '@react-navigation/stack';
 
-    import { AuthContext } from '../AuthContext';
-    import { UserContext } from '../UserContext';
+    import {AuthContext} from '../AuthContext';
+    import {UserContext} from '../UserContext';
     import HomeScreen from '../screens/HomeScreen';
     import CalendarScreen from '../screens/CalendarScreen';
 
@@ -272,23 +264,25 @@ In this section you will create a menu for the application, and update the appli
       userEmail: string;
       userPhoto: ImageSourcePropType;
       signOut: () => void;
-    }
+    };
 
     type DrawerMenuProps = {
       navigation: StackNavigationProp<ParamListBase>;
-    }
+    };
 
     const CustomDrawerContent: FC<CustomDrawerContentProps> = props => (
       <DrawerContentScrollView {...props}>
-          <View style={styles.profileView}>
-            <Image source={props.userPhoto}
-              resizeMode='contain'
-              style={styles.profilePhoto} />
-            <Text style={styles.profileUserName}>{props.userName}</Text>
-            <Text style={styles.profileEmail}>{props.userEmail}</Text>
-          </View>
-          <DrawerItemList {...props} />
-          <DrawerItem label='Sign Out' onPress={props.signOut}/>
+        <View style={styles.profileView}>
+          <Image
+            source={props.userPhoto}
+            resizeMode='contain'
+            style={styles.profilePhoto}
+          />
+          <Text style={styles.profileUserName}>{props.userName}</Text>
+          <Text style={styles.profileEmail}>{props.userEmail}</Text>
+        </View>
+        <DrawerItemList {...props} />
+        <DrawerItem label='Sign Out' onPress={props.signOut} />
       </DrawerContentScrollView>
     );
 
@@ -302,12 +296,12 @@ In this section you will create a menu for the application, and update the appli
         userFullName: 'Adele Vance',
         userEmail: 'adelev@contoso.com',
         userTimeZone: 'UTC',
-        userPhoto: require('../images/no-profile-pic.png')
-      }
+        userPhoto: require('../images/no-profile-pic.png'),
+      };
 
       _signOut = async () => {
         this.context.signOut();
-      }
+      };
 
       async componentDidMount() {
         this.props.navigation.setOptions({
@@ -323,26 +317,33 @@ In this section you will create a menu for the application, and update the appli
             <Drawer.Navigator
               drawerType='front'
               screenOptions={{
+                headerShown: true,
                 headerStyle: {
-                  backgroundColor: '#276b80'
+                  backgroundColor: '#276b80',
                 },
-                headerTintColor: 'white'
+                headerTintColor: 'white',
               }}
               drawerContent={props => (
-                <CustomDrawerContent {...props}
+                <CustomDrawerContent
+                  {...props}
                   userName={this.state.userFullName}
                   userEmail={this.state.userEmail}
                   userPhoto={this.state.userPhoto}
-                  signOut={this._signOut} />
+                  signOut={this._signOut}
+                />
               )}>
-              <Drawer.Screen name='Home'
+              <Drawer.Screen
+                name='Home'
                 component={HomeScreen}
-                options={{drawerLabel: 'Home', headerTitle: 'Welcome'}} />
-              { userLoaded &&
-                <Drawer.Screen name='Calendar'
+                options={{drawerLabel: 'Home', headerTitle: 'Welcome'}}
+              />
+              {userLoaded && (
+                <Drawer.Screen
+                  name='Calendar'
                   component={CalendarScreen}
-                  options={{drawerLabel: 'Calendar'}} />
-              }
+                  options={{drawerLabel: 'Calendar'}}
+                />
+              )}
             </Drawer.Navigator>
           </UserContext.Provider>
         );
@@ -351,24 +352,24 @@ In this section you will create a menu for the application, and update the appli
 
     const styles = StyleSheet.create({
       container: {
-        flex: 1
+        flex: 1,
       },
       profileView: {
         alignItems: 'center',
-        padding: 10
+        padding: 10,
       },
       profilePhoto: {
         width: 80,
         height: 80,
-        borderRadius: 40
+        borderRadius: 40,
       },
       profileUserName: {
-        fontWeight: '700'
+        fontWeight: '700',
       },
       profileEmail: {
         fontWeight: '200',
-        fontSize: 10
-      }
+        fontSize: 10,
+      },
     });
     ```
 
@@ -380,12 +381,15 @@ In this section you will create a menu for the application, and update the appli
     ```typescript
     // Adapted from https://reactnavigation.org/docs/auth-flow
     import * as React from 'react';
-    import { NavigationContainer, ParamListBase } from '@react-navigation/native';
-    import { createStackNavigator, StackNavigationProp } from '@react-navigation/stack'
+    import {NavigationContainer, ParamListBase} from '@react-navigation/native';
+    import {
+      createStackNavigator,
+      StackNavigationProp,
+    } from '@react-navigation/stack';
 
-    import { AuthContext } from './AuthContext';
+    import {AuthContext} from './AuthContext';
     import SignInScreen from './screens/SignInScreen';
-    import DrawerMenuContent from './menus/DrawerMenu'
+    import DrawerMenuContent from './menus/DrawerMenu';
     import AuthLoadingScreen from './screens/AuthLoadingScreen';
 
     const Stack = createStackNavigator();
@@ -394,7 +398,7 @@ In this section you will create a menu for the application, and update the appli
       navigation: StackNavigationProp<ParamListBase>;
     };
 
-    export default function App({ navigation }: Props) {
+    export default function App({navigation}: Props) {
       const [state, dispatch] = React.useReducer(
         (prevState: any, action: any) => {
           switch (action.type) {
@@ -402,34 +406,34 @@ In this section you will create a menu for the application, and update the appli
               return {
                 ...prevState,
                 userToken: action.token,
-                isLoading: false
+                isLoading: false,
               };
             case 'SIGN_IN':
               return {
                 ...prevState,
                 isSignOut: false,
-                userToken: action.token
-              }
+                userToken: action.token,
+              };
             case 'SIGN_OUT':
               return {
                 ...prevState,
                 isSignOut: true,
-                userToken: null
-              }
+                userToken: null,
+              };
           }
         },
         {
           isLoading: true,
           isSignOut: false,
-          userToken: null
-        }
+          userToken: null,
+        },
       );
 
       React.useEffect(() => {
         const bootstrapAsync = async () => {
           let userToken = null;
           // TEMPORARY
-          dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+          dispatch({type: 'RESTORE_TOKEN', token: userToken});
         };
 
         bootstrapAsync();
@@ -438,13 +442,13 @@ In this section you will create a menu for the application, and update the appli
       const authContext = React.useMemo(
         () => ({
           signIn: async () => {
-            dispatch({ type: 'SIGN_IN', token: 'placeholder-token' });
+            dispatch({type: 'SIGN_IN', token: 'placeholder-token'});
           },
           signOut: async () => {
-            dispatch({ type: 'SIGN_OUT' });
-          }
+            dispatch({type: 'SIGN_OUT'});
+          },
         }),
-        []
+        [],
       );
 
       return (
@@ -452,11 +456,11 @@ In this section you will create a menu for the application, and update the appli
           <NavigationContainer>
             <Stack.Navigator>
               {state.isLoading ? (
-                <Stack.Screen name="Loading" component={AuthLoadingScreen} />
+                <Stack.Screen name='Loading' component={AuthLoadingScreen} />
               ) : state.userToken == null ? (
-                <Stack.Screen name="SignIn" component={SignInScreen} />
+                <Stack.Screen name='SignIn' component={SignInScreen} />
               ) : (
-                <Stack.Screen name="Main" component={DrawerMenuContent} />
+                <Stack.Screen name='Main' component={DrawerMenuContent} />
               )}
             </Stack.Navigator>
           </NavigationContainer>
