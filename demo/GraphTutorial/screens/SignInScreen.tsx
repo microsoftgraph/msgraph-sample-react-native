@@ -3,7 +3,7 @@
 
 // Adapted from https://reactnavigation.org/docs/auth-flow
 import React from 'react';
-import {Alert, Button, StyleSheet, View} from 'react-native';
+import {Button, StyleSheet, View} from 'react-native';
 import {ParamListBase} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
