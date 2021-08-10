@@ -18,7 +18,8 @@ export default class AuthLoadingScreen extends React.Component {
       <View style={styles.container}>
         <ActivityIndicator
           color={Platform.OS === 'android' ? '#276b80' : undefined}
-          size='large' />
+          size='large'
+        />
         <Text style={styles.statusText}>Logging in...</Text>
       </View>
     );
@@ -29,10 +30,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   statusText: {
-    marginTop: 10
-  }
+    marginTop: 10,
+  },
 });
 // </AuthLoadingScreenSnippet>

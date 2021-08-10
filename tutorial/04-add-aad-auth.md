@@ -23,7 +23,7 @@ In this section you will create an authentication helper class, and update the a
 1. Open the **GraphTutorial/App.tsx** file and add the following `import` statement to the top of the file.
 
     ```typescript
-    import { AuthManager } from './auth/AuthManager';
+    import {AuthManager} from './auth/AuthManager';
     ```
 
 1. Replace the existing `authContext` declaration with the following.
@@ -33,7 +33,7 @@ In this section you will create an authentication helper class, and update the a
 1. Open the **GraphTutorial/menus/DrawerMenu.tsx** file and add the following `import` statement to the top of the file.
 
     ```typescript
-    import { AuthManager } from '../auth/AuthManager';
+    import {AuthManager} from '../auth/AuthManager';
     ```
 
 1. Add the following code to the `componentDidMount` function.
@@ -74,33 +74,34 @@ In this section you will create a custom authentication provider for the Graph c
 1. Create a new file in the **GraphTutorial/graph** directory named **GraphManager.ts**. Add the following code to the file.
 
     ```typescript
-    import { Client } from '@microsoft/microsoft-graph-client';
-    import { GraphAuthProvider } from './GraphAuthProvider';
+    import {Client} from '@microsoft/microsoft-graph-client';
+    import {GraphAuthProvider} from './GraphAuthProvider';
 
     // Set the authProvider to an instance
     // of GraphAuthProvider
     const clientOptions = {
-      authProvider: new GraphAuthProvider()
+      authProvider: new GraphAuthProvider(),
     };
 
     // Initialize the client
     const graphClient = Client.initWithMiddleware(clientOptions);
 
     export class GraphManager {
-      static getUserAsync = async() => {
+      static getUserAsync = async () => {
         // GET /me
         return await graphClient
           .api('/me')
           .select('displayName,givenName,mail,mailboxSettings,userPrincipalName')
           .get();
-      }
+      };
     }
     ```
 
-1. Open the **GraphTutorial/views/DrawerMenu.tsx** file and add the following `import` statement to the top of the file.
+1. Open the **GraphTutorial/views/DrawerMenu.tsx** file and add the following `import` statements to the top of the file.
 
     ```typescript
-    import { GraphManager } from '../graph/GraphManager';
+    import {GraphManager} from '../graph/GraphManager';
+    import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
     ```
 
 1. Replace the `componentDidMount` method with the following.

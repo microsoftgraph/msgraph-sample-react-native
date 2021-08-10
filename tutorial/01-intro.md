@@ -24,7 +24,7 @@ You should also have either a personal Microsoft account with a mailbox on Outlo
 >
 > - Android Studio version 4.1 with the Android 9.0 SDK
 > - Java Development Kit version 12.0.2
-> - Xcode version 12.1
+> - Xcode version 12.5.1
 > - Node.js version 14.15.0
 
 ## Feedback
