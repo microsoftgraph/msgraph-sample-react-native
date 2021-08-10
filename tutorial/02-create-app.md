@@ -31,11 +31,11 @@ Before moving on, install some additional dependencies that you will use later.
 1. Run the following command.
 
     ```Shell
-    npm install @react-navigation/native@5.9.4 @react-navigation/drawer@5.12.5 @react-navigation/stack@5.14.5
-    npm install @react-native-community/masked-view@0.1.11 react-native-safe-area-context@3.2.0 windows-iana
-    npm install react-native-reanimated@2.2.0 react-native-screens@3.4.0 @react-native-async-storage/async-storage@1.15.5
+    npm install @react-navigation/native@5.9.6 @react-navigation/drawer@5.12.7 @react-navigation/stack@5.14.7
+    npm install @react-native-community/masked-view@0.1.11 react-native-safe-area-context@3.3.0 windows-iana
+    npm install react-native-reanimated@2.2.0 react-native-screens@3.5.0 @react-native-async-storage/async-storage@1.15.5
     npm install react-native-elements@3.4.2 react-native-vector-icons@8.1.0 react-native-gesture-handler@1.10.3
-    npm install react-native-app-auth@6.4.0 moment@2.29.1 moment-timezone @microsoft/microsoft-graph-client@3.0.0-Preview.2
+    npm install react-native-app-auth@6.4.0 moment@2.29.1 moment-timezone @microsoft/microsoft-graph-client@3.0.0
     npm install @react-native-community/datetimepicker@3.5.2
     npm install @microsoft/microsoft-graph-types --save-dev
     ```
