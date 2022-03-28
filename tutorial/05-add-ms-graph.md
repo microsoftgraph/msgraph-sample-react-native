@@ -20,7 +20,7 @@ In this section you will extend the `GraphManager` class to add a function to ge
     > - The `orderby` function sorts the results by the start time.
     > - The `top` function limits the results to the first 50 events.
 
-1. Open the **GraphTutorial/views/CalendarScreen.tsx** and replace its entire contents with the following code.
+1. Open the **GraphTutorial/screens/CalendarScreen.tsx** and replace its entire contents with the following code.
 
     ```typescript
     import React from 'react';
