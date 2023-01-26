@@ -39,5 +39,5 @@ jobs:
       run: chmod +x gradlew
       working-directory: GraphRNSample/android
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build --no-daemon
       working-directory: GraphRNSample/android
