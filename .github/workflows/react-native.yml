@@ -36,6 +36,8 @@ jobs:
     - name: Lint
       run: npm run lint
     - name: Grant execute permission for gradlew
-      run: chmod +x ./android/gradlew
+      run: chmod +x gradlew
+      working-directory: android
     - name: Build with Gradle
-      run: ./android/gradlew build
+      run: ./gradlew build
+      working-directory: android
