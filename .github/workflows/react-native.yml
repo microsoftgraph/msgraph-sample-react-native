@@ -1,0 +1,40 @@
+name: React Native CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: GraphRNSample/
+        
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+    - name: set up Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    - name: Install dependencies
+      run: npm ci
+    - name: Copy settings file
+      run: |
+        cp ./auth/AuthConfig.example.ts ./auth/AuthConfig.ts
+    - name: Lint
+      run: npm run lint
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./android/gradlew
+    - name: Build with Gradle
+      run: ./android/gradlew build
