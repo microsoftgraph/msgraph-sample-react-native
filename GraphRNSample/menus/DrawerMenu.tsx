@@ -3,7 +3,7 @@
 
 import React, {FC} from 'react';
 import {
-  //Alert,
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -18,12 +18,15 @@ import {
   DrawerContentComponentProps,
 } from '@react-navigation/drawer';
 import {StackScreenProps} from '@react-navigation/stack';
+import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import {AuthContext} from '../AuthContext';
 import {UserContext} from '../UserContext';
 import {StackParamList} from '../App';
+import {GraphManager} from '../graph/GraphManager';
 import HomeScreen from '../screens/HomeScreen';
 import CalendarScreen from '../screens/CalendarScreen';
+import NewEventScreen from '../screens/NewEventScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -36,21 +39,23 @@ type CustomDrawerContentProps = DrawerContentComponentProps & {
 
 type DrawerMenuProps = StackScreenProps<StackParamList, 'Main'>;
 
-const CustomDrawerContent: FC<CustomDrawerContentProps> = props => (
-  <DrawerContentScrollView {...props}>
-    <View style={styles.profileView}>
-      <Image
-        source={props.userPhoto}
-        resizeMode='contain'
-        style={styles.profilePhoto}
-      />
-      <Text style={styles.profileUserName}>{props.userName}</Text>
-      <Text style={styles.profileEmail}>{props.userEmail}</Text>
-    </View>
-    <DrawerItemList {...props} />
-    <DrawerItem label='Sign Out' onPress={props.signOut} />
-  </DrawerContentScrollView>
-);
+const CustomDrawerContent: FC<CustomDrawerContentProps> = props => {
+  return (
+    <DrawerContentScrollView {...props}>
+      <View style={styles.profileView}>
+        <Image
+          source={props.userPhoto}
+          resizeMode='contain'
+          style={styles.profilePhoto}
+        />
+        <Text style={styles.profileUserName}>{props.userName}</Text>
+        <Text style={styles.profileEmail}>{props.userEmail}</Text>
+      </View>
+      <DrawerItemList {...props} />
+      <DrawerItem label='Sign Out' onPress={props.signOut} />
+    </DrawerContentScrollView>
+  );
+};
 
 export default class DrawerMenuContent extends React.Component<DrawerMenuProps> {
   static contextType = AuthContext;
@@ -75,6 +80,33 @@ export default class DrawerMenuContent extends React.Component<DrawerMenuProps> 
       headerShown: false,
       animationEnabled: false,
     });
+
+    try {
+      // Get the signed-in user from Graph
+      const user: MicrosoftGraph.User = await GraphManager.getUserAsync();
+
+      // Update UI with display name and email
+      this.setState({
+        userLoading: false,
+        userFirstName: user.givenName!,
+        userFullName: user.displayName!,
+        // Work/School accounts have email address in mail attribute
+        // Personal accounts have it in userPrincipalName
+        userEmail: user.mail! || user.userPrincipalName!,
+        userTimeZone: user.mailboxSettings?.timeZone!,
+      });
+    } catch (error) {
+      Alert.alert(
+        'Error getting user',
+        JSON.stringify(error),
+        [
+          {
+            text: 'OK',
+          },
+        ],
+        {cancelable: false},
+      );
+    }
   }
 
   render() {
@@ -92,6 +124,7 @@ export default class DrawerMenuContent extends React.Component<DrawerMenuProps> 
             },
             headerTintColor: 'white',
           }}
+          // eslint-disable-next-line react/no-unstable-nested-components
           drawerContent={props => (
             <CustomDrawerContent
               {...props}
@@ -111,6 +144,13 @@ export default class DrawerMenuContent extends React.Component<DrawerMenuProps> 
               name='Calendar'
               component={CalendarScreen}
               options={{drawerLabel: 'Calendar'}}
+            />
+          )}
+          {userLoaded && (
+            <Drawer.Screen
+              name='NewEvent'
+              component={NewEventScreen}
+              options={{drawerLabel: 'New event'}}
             />
           )}
         </Drawer.Navigator>

@@ -11,6 +11,7 @@ import {
 } from '@react-navigation/stack';
 
 import {AuthContext} from './AuthContext';
+import {AuthManager} from './auth/AuthManager';
 import AuthLoadingScreen from './screens/AuthLoadingScreen';
 import SignInScreen from './screens/SignInScreen';
 import DrawerMenuContent from './menus/DrawerMenu';
@@ -71,9 +72,12 @@ export default function App({_navigation}: Props) {
   const authContext = React.useMemo(
     () => ({
       signIn: async () => {
-        dispatch({type: 'SIGN_IN', token: 'placeholder-token'});
+        await AuthManager.signInAsync();
+        const token = await AuthManager.getAccessTokenAsync();
+        dispatch({type: 'SIGN_IN', token: token});
       },
       signOut: async () => {
+        await AuthManager.signOutAsync();
         dispatch({type: 'SIGN_OUT'});
       },
     }),
