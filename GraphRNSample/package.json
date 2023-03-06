@@ -22,7 +22,7 @@
     "react-native": "0.71.2",
     "react-native-app-auth": "^6.4.3",
     "react-native-gesture-handler": "^2.9.0",
-    "react-native-reanimated": "^2.14.4",
+    "react-native-reanimated": "^3.0.1",
     "react-native-safe-area-context": "^4.5.0",
     "react-native-screens": "^3.19.0",
     "windows-iana": "^5.1.0"
