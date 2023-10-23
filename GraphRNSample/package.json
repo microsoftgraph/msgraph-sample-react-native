@@ -31,7 +31,7 @@
     "@babel/core": "^7.23.0",
     "@babel/preset-env": "^7.22.20",
     "@babel/runtime": "^7.23.2",
-    "@microsoft/microsoft-graph-types": "^2.26.0",
+    "@microsoft/microsoft-graph-types": "^2.38.0",
     "@react-native-community/eslint-config": "^3.0.0",
     "@tsconfig/react-native": "^3.0.2",
     "@types/jest": "^29.5.5",
