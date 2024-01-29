@@ -28,7 +28,7 @@
     "windows-iana": "^5.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.6",
+    "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.22.20",
     "@babel/runtime": "^7.23.8",
     "@microsoft/microsoft-graph-types": "^2.40.0",
