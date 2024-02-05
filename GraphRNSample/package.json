@@ -33,7 +33,7 @@
     "@babel/runtime": "^7.23.8",
     "@microsoft/microsoft-graph-types": "^2.40.0",
     "@react-native-community/eslint-config": "^3.0.0",
-    "@tsconfig/react-native": "^3.0.2",
+    "@tsconfig/react-native": "^3.0.3",
     "@types/jest": "^29.5.10",
     "@types/react": "^18.2.41",
     "@types/react-native": "^0.71.2",
