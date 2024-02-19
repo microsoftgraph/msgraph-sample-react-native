@@ -34,7 +34,7 @@
     "@microsoft/microsoft-graph-types": "^2.40.0",
     "@react-native-community/eslint-config": "^3.0.0",
     "@tsconfig/react-native": "^3.0.3",
-    "@types/jest": "^29.5.10",
+    "@types/jest": "^29.5.12",
     "@types/react": "^18.2.41",
     "@types/react-native": "^0.71.2",
     "@types/react-test-renderer": "^18.0.7",
