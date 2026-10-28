@@ -15,7 +15,7 @@ import {
 import {createStackNavigator} from '@react-navigation/stack';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import {endOfWeek, format, parseISO, startOfWeek} from 'date-fns';
-import {zonedTimeToUtc} from 'date-fns-tz';
+import {fromZonedTime} from 'date-fns-tz';
 import {findIana} from 'windows-iana';
 
 import {UserContext} from '../UserContext';
@@ -91,11 +91,11 @@ export default class CalendarScreen extends React.Component {
       // time zone, but in UTC. For example, for PST, the time value
       // would be 07:00:00Z
       const now = new Date();
-      const startDateTime = zonedTimeToUtc(
+      const startDateTime = fromZonedTime(
         startOfWeek(now),
         ianaTimeZone,
       ).toISOString();
-      const endDateTime = zonedTimeToUtc(
+      const endDateTime = fromZonedTime(
         endOfWeek(now),
         ianaTimeZone,
       ).toISOString();
